@@ -37,7 +37,6 @@ sampleFile = pickle.load(open('multiuser357m8.pickle'))
 
 featureLst = list(pd.read_csv('./wineplus_cl.csv').columns[1:])
 
-
 def multiSplit(delimiters, string, maxsplit=0):
     regexPattern = '|'.join(map(re.escape, delimiters))
     return re.split(regexPattern, string, maxsplit)
@@ -71,7 +70,26 @@ def logFileParse(fileName, random_state=99, reductionMethod = 'mds'):
         redVectorMat = MDS(n_components=2, random_state=random_state,dissimilarity='euclidean').fit_transform(vectorMat)
     return redVectorMat
 
-logLst = logFileParse('log.txt') 
+
+os.chdir('./user_sequence_data')
+logFileLst = os.listdir('./')
+
+userModelDict = {}
+
+for log in logFileLst:
+    name = log[1:2]
+    if len(log) == 11: name = log[1:3]
+    userModelDict[name] = {}
+    MDSVals = logFileParse(log)
+    MDSValsTuple = [tuple(x) for x in MDSVals] 
+    userModelDict[name]['layouts'] = MDSValsTuple
+    userModelDict[name]['terms'] = featureLst
+    userModelDict[name]['logs'] = []
+    userModelDict[name]['observations'] = {}
+
+pFile = open('./userDisfunctionSpace.pickle', 'w')
+pickle.dump(userModelDict, pFile)
+
 
 
 
