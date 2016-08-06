@@ -28,6 +28,8 @@ import pandas as pd
 import numpy as np
 from sklearn.manifold import TSNE
 from sklearn.manifold import MDS
+import datetime
+import random
 
 
 #os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
@@ -35,7 +37,11 @@ os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
 sampleFile = pickle.load(open('multiuser357m8.pickle'))
 
+#####Feature list from the dataset
+
 featureLst = list(pd.read_csv('./wineplus_cl.csv').columns[1:])
+
+#####Functions to parse the user interaction log files, get the final vectors and perform MDS (or tsne) to get 2D proj
 
 def multiSplit(delimiters, string, maxsplit=0):
     regexPattern = '|'.join(map(re.escape, delimiters))
@@ -71,6 +77,32 @@ def logFileParse(fileName, random_state=99, reductionMethod = 'mds'):
     return redVectorMat
 
 
+####Randomly generating the logs list in the dictionary
+dateTime = []; marker = ['DOC_MOUSEOVER']*len(range(0,501,5)); info = [[123,131]]*len(range(0,501,5))
+a = datetime.datetime(2016,1,1,0,0,0)
+
+for i in range(0,501,5):
+    a = a + datetime.timedelta(seconds=5)
+    dateTime.append(a.time())
+
+logsRandom = zip(dateTime, marker, info)
+
+
+#####Randomly generating the insights sub-dictionary
+
+insightNames = featureLst[1:5]
+
+subInsights = {random.choice(insightNames):1, random.choice(insightNames):1}*20
+notes = ['xyz']*20
+
+insightsTime = []
+b = datetime.datetime(2016,1,1,0,0,1)
+for i in range(20):
+    a = a + datetime.timedelta(seconds=10)
+    insightsTime.append(a.time())
+
+
+######Putting it all together
 os.chdir('./user_sequence_data')
 logFileLst = os.listdir('./')
 
@@ -84,12 +116,17 @@ for log in logFileLst:
     MDSValsTuple = [tuple(x) for x in MDSVals] 
     userModelDict[name]['layouts'] = MDSValsTuple
     userModelDict[name]['terms'] = featureLst
-    userModelDict[name]['logs'] = []
+    userModelDict[name]['logs'] = logsRandom
     userModelDict[name]['observations'] = {}
+    userModelDict[name]['observations']['gender'] = 'm'
+    userModelDict[name]['observations']['job'] = 'student'
+    userModelDict[name]['observations']['starttime'] = datetime.time(0,0,0)
+    userModelDict[name]['observations']['comments'] = [[]*7]
+    userModelDict[name]['observations']['comments'] = [[]*7]
 
+os.chdir('./..')
 pFile = open('./userDisfunctionSpace.pickle', 'w')
 pickle.dump(userModelDict, pFile)
-
-
-
+pFile.close()
+sampleFile2 = pickle.load(open('userDisfunctionSpace.pickle'))
 
