@@ -33,8 +33,8 @@ import random
 from sklearn.decomposition import PCA
 
 
-os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
-#os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
+#os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
+os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
 sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
@@ -92,7 +92,6 @@ fullLst = []
 lstCounts = {}
 pointsMoved = {}
 for log in logFileLst:
-    print log
     name = log[1:2]
     if len(log) == 11: name = log[1:3]
     logSize, logLst, points = logFileParse(log)

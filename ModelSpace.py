@@ -31,7 +31,8 @@ PP = pprint.PrettyPrinter(indent=2)
 def aggregateData(fulldata):
     if len(fulldata) == 0:
         raise ValueError("Called aggregate data without data!")
-    
+    #######!!!!!!!!!!!! uncomment below for actual run
+    '''
     # get documents set
     docs = [ "doc" + str(i) for i in range(50) ]
     docs.extend(fulldata[fulldata.keys()[0]]['terms'])
@@ -66,6 +67,14 @@ def aggregateData(fulldata):
     #for uid in dUsrResult:
     #    dResult['DFs'][uid] = dUsrResult[uid]['DFs']
     #    dResult['lines'][uid] = dUsrResult[uid]['lines']
+    '''
+    #########!!!!Delete the code below for actual run
+    import outputRecreate as outr
+    dUsrResult = {}
+    for key in fulldata.keys():
+        userData = fulldata[key]
+        dUsrResult[key] = outr.DFLinesDict(userData)
+    
     
     return dUsrResult
 
