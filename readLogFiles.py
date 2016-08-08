@@ -33,8 +33,8 @@ import random
 from sklearn.decomposition import PCA
 
 
-#os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
-os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
+os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
+#os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
 sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
