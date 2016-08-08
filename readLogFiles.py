@@ -142,41 +142,7 @@ for i in range(20):
     insightsTime.append(a.time())
 
 subInsights = {'insights':{random.choice(insightNames):1, 'notes':'xyz', 'time':random.choice(insightsTime)} for x in range(20)}
-
-
-######Putting it all together for ModelSpace.py ##########
-userModelDict = {}
-
-for logID in MDSresultDict.keys():
-    name = 'User' + logID
-    userModelDict[name] = {}
-    MDSVals = MDSresultDict[logID]
-    MDSValsTuple = [tuple(x) for x in MDSVals] 
-    userModelDict[name]['initLayoutPoint'] = MDSValsTuple[0]
-    userModelDict[name]['layouts'] = MDSValsTuple[1:]
-    userModelDict[name]['terms'] = featureLst
-    newLogLst1 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x)).time(),'GO1',([(123,131),(156,177)],[random.random() for i in range(len(featureLst))])) \
-    for x in range(1,(len(MDSValsTuple)-1)*5,5)]
-    newLogLst2 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x+1)).time(),'DF1',[random.random() for i in range(len(featureLst))]) \
-    for x in range(1,(len(MDSValsTuple)-1)*5,5)]
-    combLogLst = [[newLogLst1[i],newLogLst2[i]] for i in range(len(newLogLst2))]    
-    userModelDict[name]['logs'] =sum(combLogLst,[]) #+ logsRandom
-    userModelDict[name]['observations'] = {}
-    userModelDict[name]['observations']['gender'] = 'm'
-    userModelDict[name]['observations']['job'] = 'student'
-    userModelDict[name]['observations']['starttime'] = datetime.time(0,0,0)
-    userModelDict[name]['observations']['comments'] = insightNames
-    userModelDict[name]['observations']['insight_names'] = [[]*7]
-    userModelDict[name]['observations']['insights'] = subInsights
-    
-
-os.chdir('./..')
-pFile = open('./userDisfunctionSpace.pickle', 'w')
-pickle.dump(userModelDict, pFile)
-pFile.close()
-sampleFile2 = pickle.load(open('userDisfunctionSpace.pickle'))
-
-
+########################################
 #############Plotting:
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm 
@@ -202,6 +168,41 @@ plt.tight_layout(pad=7)
 plt.savefig('./MDSOutput.png')
 
     
+
+
+######Putting it all together for ModelSpace.py:
+userModelDict = {}
+
+for logID in MDSresultDict.keys():
+    name = 'User' + logID
+    userModelDict[name] = {}
+    MDSVals = MDSresultDict[logID]
+    MDSValsTuple = [tuple(x) for x in MDSVals] 
+    userModelDict[name]['initLayoutPoint'] = MDSValsTuple[0]
+    userModelDict[name]['layouts'] = MDSValsTuple[1:]
+    userModelDict[name]['terms'] = featureLst
+    newLogLst1 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x)).time(),'GO1',([(123,131),(156,177)],[random.random() for i in range(len(featureLst))])) \
+    for x in range(1,(len(MDSValsTuple)-1)*5,5)]
+    newLogLst2 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x+1)).time(),'DF1',[random.random() for i in range(len(featureLst))]) \
+    for x in range(1,(len(MDSValsTuple)-1)*5,5)]
+    combLogLst = [[newLogLst1[i],newLogLst2[i]] for i in range(len(newLogLst2))]    
+    userModelDict[name]['logs'] =sum(combLogLst,[]) #+ logsRandom
+    userModelDict[name]['observations'] = {}
+    userModelDict[name]['observations']['gender'] = 'm'
+    userModelDict[name]['observations']['job'] = 'student'
+    userModelDict[name]['observations']['starttime'] = datetime.time(0,0,0)
+    userModelDict[name]['observations']['comments'] = insightNames
+    userModelDict[name]['observations']['insight_names'] = [[]*7]
+    userModelDict[name]['observations']['insights'] = subInsights
+    
+
+pFile = open('./userDisfunctionSpace.pickle', 'w')
+pickle.dump(userModelDict, pFile)
+pFile.close()
+sampleFile2 = pickle.load(open('userDisfunctionSpace.pickle'))
+
+
+
 
 
 

@@ -24,6 +24,10 @@ PP = pprint.PrettyPrinter(indent=2)
 # }
 # bring all the sources together and create line and dots
 # that will be shown in the visualization
+
+###This is the hacked version (Only change made is in the aggregate function). 
+###Instead of calling the LineInfo function, we just create a random dict.
+
 def aggregateData(fulldata):
     if len(fulldata) == 0:
         raise ValueError("Called aggregate data without data!")
@@ -31,6 +35,14 @@ def aggregateData(fulldata):
     # get documents set
     docs = [ "doc" + str(i) for i in range(50) ]
     docs.extend(fulldata[fulldata.keys()[0]]['terms'])
+    
+    #!!!!!!!!!!Delete this for real run:
+    tempDict = {'backward': False, 
+                'info': "From 15:53:00 for 0:10:15<br />Read: attacks targeting oil facilities, saudi national, web site, biological agent testing facility, apiece, guns, break, states, grenades, elected officials, american bank, charged, conspiring, missing, beach, plotted, islamic jihad union, attended training camps, germany, arrested, afghanistan, connections, organization, bombings, connection, aryan brotherhood, denver, investigation, blowing, attack, alberto gonzales describes, arrested yesterday morning, evidence, florida, buildings, atlanta bank accounts<br />Searches: ['BROOKLYN', 'DEFREITAS', 'BROOKLYN', 'ATLANTIC AVENUE', 'BALFOUR']<br />GOs: [{'terms1': []}]<br />obs: ['bomb', 'people', 'money', 'arrested', 'other countries', 'weapons', 'Brooklyn', 'spatial', 'CO', 'bank']",
+                'x1': 0.020768,
+                'x2': 0.030871,
+                'y1': 0.34112299999999995,
+                'y2': 0.361156}
 
     # get the info about the useful distance function in the data
     dUsrResult = {}
@@ -38,9 +50,15 @@ def aggregateData(fulldata):
         print "processing user: " + str(uid)
         DFInfo = distanceFunctions(fulldata[uid], docs)
         DFInfo = addInitDot(DFInfo, fulldata[uid]['initLayoutPoint'])
-        LineInfo = lines(fulldata[uid], DFInfo, docs)
+        
+        ##!!!!!!!!!!!!Uncomment these for actual run:
+        #LineInfo = lines(fulldata[uid], DFInfo, docs)
+        #LineInfo = lastLineToDot(DFInfo, LineInfo)
+        
+        ##!!!!!!!!!This needs to be deleted for actual run        
+        LineInfo = [tempDict]*((len(DFInfo))-1)
 
-        LineInfo = lastLineToDot(DFInfo, LineInfo)
+
         dUsrResult[uid] = { 'DFs': DFInfo, 'lines': LineInfo }
 
     # flip the result from user->{df->_, lines->} to df->users, lines->users
@@ -178,8 +196,8 @@ def lines(userdata, DFInfo, docs):
             
         elif 'GO1' in entry[1]:
             newEntry = {}
-            newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],
-                                           userdata['terms'])
+            newEntry['terms1'] = []
+            #newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],userdata['terms'])
             lineInfo['GOs'].append(newEntry)
 
         elif 'GO2' in entry[1]:
