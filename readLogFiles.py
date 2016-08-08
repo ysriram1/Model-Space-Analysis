@@ -48,12 +48,12 @@ def multiSplit(delimiters, string, maxsplit=0):
     regexPattern = '|'.join(map(re.escape, delimiters))
     return re.split(regexPattern, string, maxsplit)
 
-def logFileParse(fileName, random_state=99, reductionMethod = 'mds', returnListNoProj = True):
-    global vectorLst
+def logFileParse(fileName):
+    global textLst
     text = open(fileName, 'r').read()
     delimiters = '__DICT1__','__DICT2__', 'normed result theta:','Performing CLOSER transform','__END__'
     textLst = multiSplit(delimiters, text)
-    vectorLst = []
+    vectorLst = []; pointInteractionDict = {}; interactionCount = 0
     for index, line in enumerate(textLst):
         if len(line) == 0: continue
         line = line.replace('\n','')
@@ -65,6 +65,12 @@ def logFileParse(fileName, random_state=99, reductionMethod = 'mds', returnListN
                     vectorLst.append(vectorLst[-2])
                 else:
                     vectorLst.append(line.split(','))
+            elif 'MovedPointGroupsInteractionDataArray' in  line:
+                interactionCount += 1
+                pointInteractionDict[interactionCount] = []
+                for i in range(index+1,len(textLst)):
+                    if 'Running optimization' in textLst[i]: break
+                    pointInteractionDict[interactionCount].append(textLst[i].split('\n')[1:-1])
         else:
             if '__UNDO__' in line:
                 lineNew = line.replace('__UNDO__', '')
@@ -72,13 +78,11 @@ def logFileParse(fileName, random_state=99, reductionMethod = 'mds', returnListN
                 vectorLst.append(vectorLst[-2])
             else:
                 vectorLst.append(line.split(','))
+    
     vectorLst.insert(0,[1./len(vectorLst[1])]*len(vectorLst[1]))#Adding the starting point as all 1s
-    if returnListNoProj: return len(vectorLst),vectorLst 
-    vectorMat = np.array(vectorLst, dtype='float64')
-    if reductionMethod == 'tsne': redVectorMat = TSNE(n_components=2, random_state=random_state).fit_transform(vectorMat)
-    if reductionMethod == 'mds': 
-        redVectorMat = MDS(n_components=2, random_state=random_state,dissimilarity='euclidean').fit_transform(vectorMat)
-    return redVectorMat
+    
+    return len(vectorLst), vectorLst, pointInteractionDict 
+
 
 ####################Running the function and generating the MDS proj#######
 os.chdir('./user_sequence_data')
@@ -86,13 +90,15 @@ logFileLst = os.listdir('./')
 
 fullLst = []
 lstCounts = {}
+pointsMoved = {}
 for log in logFileLst:
     print log
     name = log[1:2]
     if len(log) == 11: name = log[1:3]
-    logSize, logLst = logFileParse(log)
+    logSize, logLst, points = logFileParse(log)
     fullLst = fullLst + logLst
     lstCounts[name] = logSize
+    pointsMoved[name] = pointsMoved
 
 '''
 vectorMat = np.array(fullLst, dtype='float64')
@@ -174,7 +180,7 @@ plt.savefig('./MDSOutput.png')
 userModelDict = {}
 
 for logID in MDSresultDict.keys():
-    name = 'User' + logID
+    name = int(logID)
     userModelDict[name] = {}
     MDSVals = MDSresultDict[logID]
     MDSValsTuple = [tuple(x) for x in MDSVals] 
