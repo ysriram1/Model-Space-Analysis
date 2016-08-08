@@ -24,15 +24,9 @@ PP = pprint.PrettyPrinter(indent=2)
 # }
 # bring all the sources together and create line and dots
 # that will be shown in the visualization
-
-#addRead = False in lines()
-#newEntry['terms1'] = 'A,B,C,D' in lines() under conditional for "GO1"
-
 def aggregateData(fulldata):
-    global LineInfo
     if len(fulldata) == 0:
         raise ValueError("Called aggregate data without data!")
-    
     
     # get documents set
     docs = [ "doc" + str(i) for i in range(50) ]
@@ -40,12 +34,10 @@ def aggregateData(fulldata):
 
     # get the info about the useful distance function in the data
     dUsrResult = {}
-    for i,uid in enumerate(fulldata):
+    for uid in fulldata:
         print "processing user: " + str(uid)
         DFInfo = distanceFunctions(fulldata[uid], docs)
         DFInfo = addInitDot(DFInfo, fulldata[uid]['initLayoutPoint'])
-        #LineInfo = {'GOs': [], 'obs': [], 'read': set(), 'reset': False, 'search': [], 'tEnd': dt.time(15, 58, 2*i),'tStart': dt.time(15, 58, 2*i+1),'undo': False}        
-        
         LineInfo = lines(fulldata[uid], DFInfo, docs)
 
         LineInfo = lastLineToDot(DFInfo, LineInfo)
@@ -71,7 +63,6 @@ def observationSet(fulldata):
 # * return format is [ (time, (layoutx,y), info_string ) ]
 def distanceFunctions(userdata, docs):
     lLayouts = userdata['layouts']
-    global GOnDFPairs
 
     # go through logs and get pairs of GO and DF entries
     GOnDFPairs = [] # of tuples ( GO entry, DF entry )
@@ -120,7 +111,6 @@ def distanceFunctions(userdata, docs):
 # * return format is [ {x1:_, y1:_, x2:_, y2:_, info:_ } ]
 readDeltaT = 3
 def lines(userdata, DFInfo, docs):
-    global lineInfo
     lLayouts =  [ x[1] for x in DFInfo ]  #userdata['layouts']
     print "lLayouts", lLayouts
     starttime = userdata['observations']['starttime']    
@@ -188,8 +178,8 @@ def lines(userdata, DFInfo, docs):
             
         elif 'GO1' in entry[1]:
             newEntry = {}
-            newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],userdata['terms'])
-            #newEntry['terms1'] = 'A,B,C,D'
+            newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],
+                                           userdata['terms'])
             lineInfo['GOs'].append(newEntry)
 
         elif 'GO2' in entry[1]:
@@ -204,7 +194,6 @@ def lines(userdata, DFInfo, docs):
             lineInfo['tEnd'] = entry[0]
 
         # look back to see if last DOC entry should be added
-        #addRead = False
         if addRead:
             if not 'MOUSE' in addRead[2]:
                 lineInfo['read'] = lineInfo['read'].union(addRead[1])
