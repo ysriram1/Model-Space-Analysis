@@ -30,10 +30,11 @@ from sklearn.manifold import TSNE
 from sklearn.manifold import MDS
 import datetime
 import random
+from sklearn.decomposition import PCA
 
 
-os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
-#os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
+#os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
+os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
 sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
@@ -47,7 +48,8 @@ def multiSplit(delimiters, string, maxsplit=0):
     regexPattern = '|'.join(map(re.escape, delimiters))
     return re.split(regexPattern, string, maxsplit)
 
-def logFileParse(fileName, random_state=99, reductionMethod = 'mds'):
+def logFileParse(fileName, random_state=99, reductionMethod = 'mds', returnListNoProj = True):
+    global vectorLst
     text = open(fileName, 'r').read()
     delimiters = '__DICT1__','__DICT2__', 'normed result theta:','Performing CLOSER transform','__END__'
     textLst = multiSplit(delimiters, text)
@@ -70,12 +72,53 @@ def logFileParse(fileName, random_state=99, reductionMethod = 'mds'):
                 vectorLst.append(vectorLst[-2])
             else:
                 vectorLst.append(line.split(','))
+    vectorLst.insert(0,[1./len(vectorLst[1])]*len(vectorLst[1]))#Adding the starting point as all 1s
+    if returnListNoProj: return len(vectorLst),vectorLst 
     vectorMat = np.array(vectorLst, dtype='float64')
     if reductionMethod == 'tsne': redVectorMat = TSNE(n_components=2, random_state=random_state).fit_transform(vectorMat)
     if reductionMethod == 'mds': 
         redVectorMat = MDS(n_components=2, random_state=random_state,dissimilarity='euclidean').fit_transform(vectorMat)
     return redVectorMat
 
+####################Running the function and generating the MDS proj#######
+os.chdir('./user_sequence_data')
+logFileLst = os.listdir('./')
+
+fullLst = []
+lstCounts = {}
+for log in logFileLst:
+    print log
+    name = log[1:2]
+    if len(log) == 11: name = log[1:3]
+    logSize, logLst = logFileParse(log)
+    fullLst = fullLst + logLst
+    lstCounts[name] = logSize
+
+'''
+vectorMat = np.array(fullLst, dtype='float64')
+start = 0; end = 0 
+lstDict = {}
+for logID in ['10','11','1','2','4','5','6','7','8','9']:
+    end = end + lstCounts[logID]
+    print start, ' ', end
+    lstDict[logID] = vectorMat[start:end]
+    start = end
+'''
+
+
+##Performing MDS on the entire data:
+vectorMat = np.array(fullLst, dtype='float64')
+redVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vectorMat)
+#redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
+
+start = 0; end = 0 
+MDSresultDict = {}
+for logID in ['10','11','1','2','4','5','6','7','8','9']:
+    end = end + lstCounts[logID]
+    MDSresultDict[logID] = redVectorMat[start:end]
+    start = end
+
+os.chdir('./..')
 
 ####Randomly generating the logs list in the dictionary
 dateTime = []; marker = ['DOC_MOUSEOVER']*len(range(0,501,5)); info = [12,34]*len(range(0,501,5))
@@ -101,17 +144,13 @@ for i in range(20):
 subInsights = {'insights':{random.choice(insightNames):1, 'notes':'xyz', 'time':random.choice(insightsTime)} for x in range(20)}
 
 
-######Putting it all together
-os.chdir('./user_sequence_data')
-logFileLst = os.listdir('./')
-
+######Putting it all together for ModelSpace.py ##########
 userModelDict = {}
 
-for log in logFileLst:
-    name = log[1:2]
-    if len(log) == 11: name = log[1:3]
+for logID in MDSresultDict.keys():
+    name = 'User' + logID
     userModelDict[name] = {}
-    MDSVals = logFileParse(log) 
+    MDSVals = MDSresultDict[logID]
     MDSValsTuple = [tuple(x) for x in MDSVals] 
     userModelDict[name]['initLayoutPoint'] = MDSValsTuple[0]
     userModelDict[name]['layouts'] = MDSValsTuple[1:]
@@ -143,21 +182,17 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm 
 plt.style.use('ggplot')
 
-os.chdir('./user_sequence_data')
-logFileLst = os.listdir('./')
-
-
 colors=cm.rainbow(np.linspace(0,1,10))
 
 fig = plt.figure(figsize=(17,17))
 ax = fig.add_subplot(111)
 
-for color, log in zip(colors,logFileLst):
-    name = 'User ' + log[1:2]
-    if len(log) == 11: name = 'User ' + log[1:3]
-    MDSVals = logFileParse(log)
-    ax.scatter(MDSVals[:,0], MDSVals[:,1], color = color)
+for color, logID in zip(colors,MDSresultDict.keys()):
+    name = 'User' + logID
+    MDSVals = MDSresultDict[logID]
+    ax.scatter(MDSVals[:,0], MDSVals[:,1], color = 'b', s=40)
     ax.plot(MDSVals[:,0], MDSVals[:,1], '-', color = color, label = name, linewidth=4)
+
 
 ax.legend()
 plt.xlabel('MDS Proj 1'); plt.ylabel('MDS Proj 2')
