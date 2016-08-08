@@ -197,8 +197,8 @@ def lines(userdata, DFInfo, docs):
         elif 'GO1' in entry[1]:
             newEntry = {}
             ##!!!!!!!!!!!!!!!!!!!!New temp newEntry created, this needs to be deleted.
-            newEntry['term1'] = 'beach, email warning, passports, faked, egyptian passport, cab, custody shortly, spent'
-            #newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],userdata['terms'])
+            #newEntry['term1'] = 'beach, email warning, passports, faked, egyptian passport, cab, custody shortly, spent'
+            newEntry['terms1'] = termsList([ int(e[0]) for e in entry[2][0] ],userdata['terms'])
             lineInfo['GOs'].append(newEntry)
 
         elif 'GO2' in entry[1]:
