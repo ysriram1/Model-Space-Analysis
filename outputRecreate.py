@@ -11,17 +11,15 @@ Created on Mon Aug  8 00:38:27 2016
 #userData = sampleFile2[1] #Just to test out
 
 def fillDFs(userData):
-    startTuple = [(0, userData['initLayoutPoint'], 'Starting...')]
+    startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%userData['KNNAcc'][0])]
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
-        randomText = 'DF Number %i <br />address shown<br />doc30<br />\
-        atlanta bank accounts<br />saudi national<br />weapons<br />denver\
-        <br />god\<br />denver bank accounts<br />doc26<br />deposited'%(i+1)
+        randomText = 'DF Number %i <br /> 5-NN Accuracy: %.2f'%(i+2, userData['KNNAcc'][i+1])
         remainingTuples.append((i*5,points,randomText))
     return startTuple + remainingTuples
     
 def fillLines(userData):
-    randomText = "From 15:53:00 for 0:10:15<br />Read: attacks targeting\
+    randomText = "<br />Read: attacks targeting\
     oil facilities, saudi national, web site, biological agent testing\
     facility, apiece, guns, break, states, grenades, elected officials,\
     american bank, charged, conspiring, missing, beach, plotted, islamic jihad\
