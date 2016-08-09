@@ -39,10 +39,7 @@ os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
 sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
-#####Feature list from the dataset
-
-featureLst = list(pd.read_csv('./wineplus_cl.csv').columns[1:])
-
+##############################################################################################################
 #####Functions to parse the user interaction log files, get the final vectors and perform MDS (or tsne) to get 2D proj
 
 def multiSplit(delimiters, string, maxsplit=0):
@@ -89,19 +86,30 @@ def knnAccGen(userWList, X, y):
     knnAccLst= []
     knnClf = KNeighborsClassifier(3)
     for weights in userWList:
+        weights = np.abs(weights) #setting all negative values to positive (there was only one such val)
         newX = X*np.sqrt(weights)
         score = cross_val_score(knnClf, newX, y, cv=10, scoring='accuracy')
         knnAccLst.append(np.mean(score))
+    return knnAccLst
     
-    
-    
+def getTopFeatures(userWList, featureLst, numberToPick=5):
+    topFeatureLst = []    
+    for index, weights in enumerate(userWList):
+        if index == 0: topFeatureLst.append('NA All Weights Equal'); continue
+        topFeatureLst.append([featureLst[i] for i in weights.argsort()[-numberToPick:][::-1]])
+    return topFeatureLst
 
-####################Running the function and generating the MDS proj#######
+##################################################################################################################
+#####Feature list from the dataset and X and y values from the dataset ################################
+featureLst = list(pd.read_csv('./wineplus_cl.csv').columns[1:])
+
 X = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='float64',\
                     usecols = range(1,24))
                     
 y = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='object',\
                     usecols = 0)
+
+####################Running the function and generating the MDS proj, Nearest Neighbours etc#######
 
 os.chdir('./user_sequence_data')
 logFileLst = os.listdir('./')
@@ -115,7 +123,7 @@ for log in logFileLst:
     logSize, logLst, points = logFileParse(log)
     fullLst = fullLst + logLst
     lstCounts[name] = logSize
-    pointsMoved[name] = pointsMoved
+    pointsMoved[name] = points
 
 
 vectorMat = np.array(fullLst, dtype='float64')
@@ -128,9 +136,13 @@ for logID in ['10','11','1','2','4','5','6','7','8','9']:
     start = end
 
 knnDict = {}
-for logID in ['10','11','1','2','4','5','6','7','8','9']:
+for logID in lstDict.keys():
+    #print logID, np.sum((lstDict[logID]<0),1), lstDict[logID].shape
     knnDict[logID] = knnAccGen(lstDict[logID], X, y)
 
+topFeatureDict = {}
+for logID in lstDict.keys():
+    topFeatureDict[logID] = getTopFeatures(lstDict[logID], featureLst, numberToPick=5)
 
 ##Performing MDS on the entire data:
 vectorMat = np.array(fullLst, dtype='float64')
@@ -147,6 +159,7 @@ for logID in ['10','11','1','2','4','5','6','7','8','9']:
 
 os.chdir('./..')
 
+######################################################################################################
 ####Randomly generating the logs list in the dictionary
 dateTime = []; marker = ['DOC_MOUSEOVER']*len(range(0,501,5)); info = [12,34]*len(range(0,501,5))
 a = datetime.datetime(2016,1,1,0,0,0)
@@ -169,7 +182,8 @@ for i in range(20):
     insightsTime.append(a.time())
 
 subInsights = {'insights':{random.choice(insightNames):1, 'notes':'xyz', 'time':random.choice(insightsTime)} for x in range(20)}
-########################################
+
+#######################################################################################################
 #############Plotting:
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm 
@@ -196,7 +210,7 @@ plt.savefig('./MDSOutput.png')
 
     
 
-
+#########################################################################################################
 ######Putting it all together for ModelSpace.py:
 userModelDict = {}
 
@@ -204,7 +218,9 @@ for logID in MDSresultDict.keys():
     name = int(logID)
     userModelDict[name] = {}
     MDSVals = MDSresultDict[logID]
-    MDSValsTuple = [tuple(x) for x in MDSVals] 
+    MDSValsTuple = [tuple(x) for x in MDSVals]
+    userModelDict[name]['KNNAcc'] = knnDict[logID]
+    userModelDict[name]['topFeatures'] = topFeatureDict[logID]
     userModelDict[name]['initLayoutPoint'] = MDSValsTuple[0]
     userModelDict[name]['layouts'] = MDSValsTuple[1:]
     userModelDict[name]['terms'] = featureLst
@@ -228,7 +244,7 @@ pickle.dump(userModelDict, pFile)
 pFile.close()
 sampleFile2 = pickle.load(open('userDisfunctionSpace.pickle'))
 
-
+#######################################END#######################################################
 
 
 
