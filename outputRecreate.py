@@ -14,12 +14,15 @@ def fillDFs(userData):
     startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%userData['KNNAcc'][0])]
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
-        randomText = 'DF Number %i <br /> 5-NN Accuracy: %.2f'%(i+2, userData['KNNAcc'][i+1])
-        remainingTuples.append((i*5,points,randomText))
+        featureString = 'Top 5 Features: <br /> '
+        for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
+            featureString = featureString + featureName + '<br /> '
+        text = 'DF Number %i <br /> 5-NN Accuracy: %.2f <br /> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
+        remainingTuples.append((i*5,points,text))
     return startTuple + remainingTuples
     
 def fillLines(userData):
-    randomText = "<br />Read: attacks targeting\
+    randomText = "Read: attacks targeting\
     oil facilities, saudi national, web site, biological agent testing\
     facility, apiece, guns, break, states, grenades, elected officials,\
     american bank, charged, conspiring, missing, beach, plotted, islamic jihad\
