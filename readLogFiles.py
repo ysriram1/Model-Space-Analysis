@@ -31,7 +31,8 @@ from sklearn.manifold import MDS
 import datetime
 import random
 from sklearn.decomposition import PCA
-
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import cross_val_score
 
 #os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
 os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
@@ -84,7 +85,24 @@ def logFileParse(fileName):
     return len(vectorLst), vectorLst, pointInteractionDict 
 
 
+def knnAccGen(userWList, X, y):
+    knnAccLst= []
+    knnClf = KNeighborsClassifier(3)
+    for weights in userWList:
+        newX = X*np.sqrt(weights)
+        score = cross_val_score(knnClf, newX, y, cv=10, scoring='accuracy')
+        knnAccLst.append(np.mean(score))
+    
+    
+    
+
 ####################Running the function and generating the MDS proj#######
+X = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='float64',\
+                    usecols = range(1,24))
+                    
+y = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='object',\
+                    usecols = 0)
+
 os.chdir('./user_sequence_data')
 logFileLst = os.listdir('./')
 
@@ -99,7 +117,7 @@ for log in logFileLst:
     lstCounts[name] = logSize
     pointsMoved[name] = pointsMoved
 
-'''
+
 vectorMat = np.array(fullLst, dtype='float64')
 start = 0; end = 0 
 lstDict = {}
@@ -108,13 +126,17 @@ for logID in ['10','11','1','2','4','5','6','7','8','9']:
     print start, ' ', end
     lstDict[logID] = vectorMat[start:end]
     start = end
-'''
+
+knnDict = {}
+for logID in ['10','11','1','2','4','5','6','7','8','9']:
+    knnDict[logID] = knnAccGen(lstDict[logID], X, y)
 
 
 ##Performing MDS on the entire data:
 vectorMat = np.array(fullLst, dtype='float64')
 redVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vectorMat)
 #redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
+#redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
 
 start = 0; end = 0 
 MDSresultDict = {}
