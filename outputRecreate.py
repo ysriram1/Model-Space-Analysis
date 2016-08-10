@@ -37,7 +37,6 @@ def fillLines(userData):
         accChange = userData['KNNAcc'][i] - userData['KNNAcc'][i-1]
         direction = "increase" if round(accChange,2) >0  else "decrease"
         if round(accChange,2) == 0: direction = "unchanged"
-        accChange = accChange if accChange>=0 else -accChange
         text = text + "%.2f (%s)"%(accChange,direction)
         linesLst.append({'backward': False, 'info':text, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2})
