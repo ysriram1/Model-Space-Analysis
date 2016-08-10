@@ -51,7 +51,7 @@ def logFileParse(fileName):
     text = open(fileName, 'r').read()
     delimiters = '__DICT1__','__DICT2__', 'normed result theta:','Performing CLOSER transform','__END__'
     textLst = multiSplit(delimiters, text)
-    vectorLst = []; pointInteractionDict = {}; interactionCount = 0
+    vectorLst = []; pointInteractionDict = {}; interactionCount = 0; undoPointer = []
     for index, line in enumerate(textLst):
         if len(line) == 0: continue
         line = line.replace('\n','')
@@ -79,7 +79,7 @@ def logFileParse(fileName):
     
     vectorLst.insert(0,[1./len(vectorLst[1])]*len(vectorLst[1]))#Adding the starting point as all 1s
     
-    return len(vectorLst), vectorLst, pointInteractionDict 
+    return len(vectorLst), vectorLst, pointInteractionDict, undoPointer 
 
 
 def knnAccGen(userWList, X, y):

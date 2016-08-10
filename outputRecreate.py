@@ -22,20 +22,9 @@ def fillDFs(userData):
     return startTuple + remainingTuples
     
 def fillLines(userData):
-    randomText = "Read: attacks targeting\
-    oil facilities, saudi national, web site, biological agent testing\
-    facility, apiece, guns, break, states, grenades, elected officials,\
-    american bank, charged, conspiring, missing, beach, plotted, islamic jihad\
-    union, attended training camps, germany, arrested, afghanistan, \
-    connections, organization, bombings, connection, aryan brotherhood,\
-    denver, investigation, blowing, attack, alberto gonzales describes, \
-    arrested yesterday morning, evidence, florida, buildings, atlanta bank \
-    accounts<br />Searches: ['BROOKLYN', 'DEFREITAS', 'BROOKLYN', 'ATLANTIC \
-    AVENUE', 'BALFOUR']<br />GOs: [{'terms1': 'atlanta bank accounts, aryan \
-    brotherhood'}]<br />obs: ['bomb', 'people', 'money', 'arrested', 'other\
-    countries', 'weapons', 'Brooklyn', 'spatial', 'CO', 'bank']"
     linesLst = []
     for i, points in enumerate(userData['layouts']):
+        text = "Accuracy Change: "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
             y1 = userData['initLayoutPoint'][1]
@@ -44,7 +33,11 @@ def fillLines(userData):
             y1 = userData['layouts'][i-1][1]
         x2 = userData['layouts'][i][0]
         y2 = userData['layouts'][i][1]
-        linesLst.append({'backward': False, 'info':randomText, 
+        accChange = userData['KNNAcc'][i] - userData['KNNAcc'][i] 
+        direction = "increase" if accChange >0 else "decrease"
+        accChange = accChange if accChange>0 else - accChange
+        text = text + "%.2f (%)"%(accChange,direction)
+        linesLst.append({'backward': False, 'info':text, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2})
     return linesLst
 
