@@ -15,7 +15,7 @@ def fillDFs(userData):
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
         if userData['undoIndicator'][i] == 1: continue
-        featureString = 'Top 5 Features: <br /> '
+        featureString = '<u>Top 5 Features<\u>: <br /> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br /> '
         text = 'DF Number %i <br /> 5-NN Accuracy: %.2f <br /> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
@@ -25,8 +25,25 @@ def fillDFs(userData):
 
 def fillLines(userData):
     linesLst = []
+    pushj = 0
     for i, points in enumerate(userData['layouts']):
-        text = "Accuracy Change: "
+        j = i + 1 #the pointsList starts with key 1 not 0
+        pointsText = '<br /><u>Points Moved<\u>: <br /> '        
+        print j - pushj
+        if userData['undoIndicator'][i] == 1: pointAddText = 'None(user used UNDO)'; pushj += 1; print pushj
+        else: 
+            pointsMovedFullLst = userData['pointsMoved'][j-pushj] #need to go back by pushj amount since pointsMoved dict doesnt take into account undos            
+            allEntryLst = []            
+            for entry in pointsMovedFullLst:
+                subEntryLst = []
+                for subEntry in entry:
+                    subEntryLst.append(subEntry.split(',')[0])
+                allEntryLst.append(subEntryLst)
+            set1 = 'Set1: '+','.join(allEntryLst[0]) +'<br \>'
+            set2 = 'Set2: '+','.join(allEntryLst[1])
+            pointAddText = set1 + set2
+        totalPointsText = pointsText + pointAddText
+        text = "<u>Accuracy Change<\u>: "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
             y1 = userData['initLayoutPoint'][1]
@@ -43,7 +60,7 @@ def fillLines(userData):
         else: text = text + "%.2f (%s)"%(accChange,direction)
         undoInd = False
         if userData['undoIndicator'][i] == 1: undoInd = True
-        linesLst.append({'backward': undoInd, 'info':text, 
+        linesLst.append({'backward': undoInd, 'info':text + totalPointsText, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2})
     return linesLst
     

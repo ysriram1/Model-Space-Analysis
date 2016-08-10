@@ -244,6 +244,7 @@ for logID in MDSresultDict.keys():
     userModelDict[name]['layouts'] = MDSValsTuple[1:]
     userModelDict[name]['terms'] = featureLst
     userModelDict[name]['undoIndicator'] = undoIndicatorDict[logID]
+    userModelDict[name]['pointsMoved'] = pointsMoved[logID]
     newLogLst1 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x)).time(),'GO1',([(123,131),(156,177)],[random.random() for i in range(len(featureLst))])) \
     for x in range(1,(len(MDSValsTuple)-1)*5,5)]
     newLogLst2 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x+1)).time(),'DF1',[random.random() for i in range(len(featureLst))]) \
