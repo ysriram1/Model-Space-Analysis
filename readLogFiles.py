@@ -57,13 +57,15 @@ def logFileParse(fileName):
         line = line.replace('\n','')
         if index+1 < len(textLst):
             if 'MovedPointGroupsInteractionDataArray' in  textLst[index+1]:
-                if '__UNDO__' in line: 
+                if '__UNDO__' in line:
+                    print line
                     lineNew = line.replace('__UNDO__', '')
                     undoIndicator.append(0)
                     vectorLst.append(lineNew.split(','))
                     undoIndicator.append(1)
                     vectorLst.append(vectorLst[-2])
                 else:
+                    print line
                     undoIndicator.append(0)
                     vectorLst.append(line.split(','))
             elif 'MovedPointGroupsInteractionDataArray' in  line:
