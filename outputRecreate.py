@@ -21,6 +21,7 @@ def fillDFs(userData):
         remainingTuples.append((i*5,points,text))
     return startTuple + remainingTuples
     
+
 def fillLines(userData):
     linesLst = []
     for i, points in enumerate(userData['layouts']):
@@ -33,14 +34,14 @@ def fillLines(userData):
             y1 = userData['layouts'][i-1][1]
         x2 = userData['layouts'][i][0]
         y2 = userData['layouts'][i][1]
-        accChange = userData['KNNAcc'][i] - userData['KNNAcc'][i] 
-        direction = "increase" if accChange >0 else "decrease"
-        accChange = accChange if accChange>0 else - accChange
-        text = text + "%.2f (%)"%(accChange,direction)
+        accChange = userData['KNNAcc'][i] - userData['KNNAcc'][i-1]
+        direction = "increase" if round(accChange,2) >0  else "decrease"
+        if round(accChange,2) == 0: direction = "unchanged"
+        accChange = accChange if accChange>=0 else -accChange
+        text = text + "%.2f (%s)"%(accChange,direction)
         linesLst.append({'backward': False, 'info':text, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2})
     return linesLst
-
     
 def DFLinesDict(userData):
     return {'DFs':fillDFs(userData), 'lines':fillLines(userData)}
