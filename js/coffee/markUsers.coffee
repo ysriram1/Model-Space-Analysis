@@ -4,10 +4,11 @@
 markUsers = (T) ->
     # actual participant breakdown
     dUserGroups =
-        professionals: [3,10]
-        interns: [1,2,5,9,12]
-        sande: [4,7,8,11,13]
-        other: [6]
+        #professionals: [3,10]
+        #interns: [1,2,5,9,12]
+        #sande: [4,7,8,11,13]
+        #other: [6]
+        Students:[1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
 
     # which way are we setting the user group
     bTurnOn = d3.select('#chkGrp' + T).property('checked')

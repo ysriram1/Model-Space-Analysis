@@ -48,7 +48,7 @@ def fillLines(userData):
                     end = end + 6
                     setVals[index] += ', '.join(pointSet[start:end]) + '<br \>'
                 if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[start:start+len(pointSet)%6])
-            set1 = setVals[0]
+            set1 = setVals[0] + '<br \>'
             set2 = setVals[1]
             pointAddText = set1 + set2
         totalPointsText = pointsText + pointAddText
