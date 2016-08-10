@@ -58,14 +58,12 @@ def logFileParse(fileName):
         if index+1 < len(textLst):
             if 'MovedPointGroupsInteractionDataArray' in  textLst[index+1]:
                 if '__UNDO__' in line:
-                    print line
                     lineNew = line.replace('__UNDO__', '')
                     undoIndicator.append(0)
                     vectorLst.append(lineNew.split(','))
                     undoIndicator.append(1)
                     vectorLst.append(vectorLst[-2])
                 else:
-                    print line
                     undoIndicator.append(0)
                     vectorLst.append(line.split(','))
             elif 'MovedPointGroupsInteractionDataArray' in  line:
@@ -159,6 +157,17 @@ vectorMat = np.array(fullLst, dtype='float64')
 redVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vectorMat)
 #redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
 #redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
+
+#Making sure that redVec will have the same values when the actual vector has the same values:
+changes = 0
+for i in range(1,len(vectorMat)):
+    for j in range(i+1,len(vectorMat)):
+        if np.sum(vectorMat[i] == vectorMat[j]) == len(vectorMat[j]):
+            if np.sum(redVectorMat[j] == redVectorMat[i]) < len(redVectorMat[i]):
+                changes += 1
+                redVectorMat[j] = redVectorMat[i]
+        
+
 
 start = 0; end = 0 
 MDSresultDict = {}
