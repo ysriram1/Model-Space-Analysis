@@ -51,7 +51,7 @@ def logFileParse(fileName):
     text = open(fileName, 'r').read()
     delimiters = '__DICT1__','__DICT2__', 'normed result theta:','Performing CLOSER transform','__END__'
     textLst = multiSplit(delimiters, text)
-    vectorLst = []; pointInteractionDict = {}; interactionCount = 0; undoPointer = []
+    vectorLst = []; pointInteractionDict = {}; interactionCount = 0; undoIndicator = []
     for index, line in enumerate(textLst):
         if len(line) == 0: continue
         line = line.replace('\n','')
@@ -59,9 +59,12 @@ def logFileParse(fileName):
             if 'MovedPointGroupsInteractionDataArray' in  textLst[index+1]:
                 if '__UNDO__' in line: 
                     lineNew = line.replace('__UNDO__', '')
+                    undoIndicator.append(0)
                     vectorLst.append(lineNew.split(','))
+                    undoIndicator.append(1)
                     vectorLst.append(vectorLst[-2])
                 else:
+                    undoIndicator.append(0)
                     vectorLst.append(line.split(','))
             elif 'MovedPointGroupsInteractionDataArray' in  line:
                 interactionCount += 1
@@ -72,14 +75,17 @@ def logFileParse(fileName):
         else:
             if '__UNDO__' in line:
                 lineNew = line.replace('__UNDO__', '')
+                undoIndicator.append(0)
                 vectorLst.append(lineNew.split(',')) 
+                undoIndicator.append(1)
                 vectorLst.append(vectorLst[-2])
             else:
+                undoIndicator.append(0)
                 vectorLst.append(line.split(','))
     
     vectorLst.insert(0,[1./len(vectorLst[1])]*len(vectorLst[1]))#Adding the starting point as all 1s
     
-    return len(vectorLst), vectorLst, pointInteractionDict, undoPointer 
+    return len(vectorLst), vectorLst, pointInteractionDict, undoIndicator
 
 
 def knnAccGen(userWList, X, y):
@@ -117,13 +123,15 @@ logFileLst = os.listdir('./')
 fullLst = []
 lstCounts = {}
 pointsMoved = {}
+undoIndicatorDict = {} #note that if position 'i' has the 'undo', then position 'i+1' in the indicator has the 1 value
 for log in logFileLst:
     name = log[1:2]
     if len(log) == 11: name = log[1:3]
-    logSize, logLst, points = logFileParse(log)
+    logSize, logLst, points, undos = logFileParse(log)
     fullLst = fullLst + logLst
     lstCounts[name] = logSize
     pointsMoved[name] = points
+    undoIndicatorDict[name] = undos
 
 
 vectorMat = np.array(fullLst, dtype='float64')
@@ -224,6 +232,7 @@ for logID in MDSresultDict.keys():
     userModelDict[name]['initLayoutPoint'] = MDSValsTuple[0]
     userModelDict[name]['layouts'] = MDSValsTuple[1:]
     userModelDict[name]['terms'] = featureLst
+    userModelDict[name]['undoIndicator'] = undoIndicatorDict[logID]
     newLogLst1 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x)).time(),'GO1',([(123,131),(156,177)],[random.random() for i in range(len(featureLst))])) \
     for x in range(1,(len(MDSValsTuple)-1)*5,5)]
     newLogLst2 = [((datetime.datetime(2016,1,1,0,8,25)+datetime.timedelta(seconds=x+1)).time(),'DF1',[random.random() for i in range(len(featureLst))]) \
