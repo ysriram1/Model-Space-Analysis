@@ -28,7 +28,7 @@ def fillLines(userData):
     pushj = 0
     for i, points in enumerate(userData['layouts']):
         j = i + 1 #the pointsList starts with key 1 not 0
-        pointsText = '<br /><u>Points Moved<\u>: <br /> '        
+        pointsText = '<br /><u>Points Moved<u \>: <br /> '        
         print j - pushj
         if userData['undoIndicator'][i] == 1: pointAddText = 'None(user used UNDO)'; pushj += 1; print pushj
         else: 
@@ -39,11 +39,20 @@ def fillLines(userData):
                 for subEntry in entry:
                     subEntryLst.append(subEntry.split(',')[0])
                 allEntryLst.append(subEntryLst)
-            set1 = 'Set1: '+','.join(allEntryLst[0]) +'<br \>'
-            set2 = 'Set2: '+','.join(allEntryLst[1])
+            setVals = {}
+            for index, pointSet in enumerate(allEntryLst):#This is done to ensure the sets are divided properly (each line with only have 6 items)
+                setVals[index] = 'Set%s: '%(index+1)
+                start=0; end = 0
+                for cut in len(pointSet)//6:
+                    start = end
+                    end = end + 6
+                    setVals[index] += ', '.join(pointSet[start:end]) + '<br \>'
+                if len(pointSet)%6 ~= 0: setVals[index] += ', '.join(pointSet[start:start+len(pointSet)%6])
+            set1 = setVals[0]
+            set2 = setVals[1]
             pointAddText = set1 + set2
         totalPointsText = pointsText + pointAddText
-        text = "<u>Accuracy Change<\u>: "
+        text = "<u>Accuracy Change<u \>: "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
             y1 = userData['initLayoutPoint'][1]
