@@ -14,7 +14,8 @@ def fillDFs(userData):
     startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%userData['KNNAcc'][0])]
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
-        if userData['undoIndicator'][i+1] == 1: continue
+        if i+1 <= len(userData['undoIndicator']):
+            if userData['undoIndicator'][i+1] == 1: continue
         featureString = 'Top 5 Features: <br /> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br /> '
