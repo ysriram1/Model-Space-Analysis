@@ -39,7 +39,8 @@ def fillLines(userData):
         direction = "increase" if round(accChange,2) >0  else "decrease"
         if round(accChange,2) == 0: direction = "unchanged"
         if round(accChange,2) == 0: accChange = 0
-        text = text + "%.2f (%s)"%(accChange,direction)
+        if accChange>0: text = text + "-%.2f (%s)"%(accChange,direction)        
+        else: text = text + "%.2f (%s)"%(accChange,direction)
         undoInd = False
         if userData['undoIndicator'][i] == 1: undoInd = True
         linesLst.append({'backward': undoInd, 'info':text, 
