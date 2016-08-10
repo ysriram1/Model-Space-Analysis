@@ -43,7 +43,7 @@ def fillLines(userData):
             for index, pointSet in enumerate(allEntryLst):#This is done to ensure the sets are divided properly (each line with only have 6 items)
                 setVals[index] = 'Set%s: '%(index+1)
                 start=0; end = 0
-                for cut in len(pointSet)//6:
+                for cut in range(len(pointSet)//6):
                     start = end
                     end = end + 6
                     setVals[index] += ', '.join(pointSet[start:end]) + '<br \>'
