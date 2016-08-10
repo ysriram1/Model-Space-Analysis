@@ -14,6 +14,8 @@ def fillDFs(userData):
     startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%userData['KNNAcc'][0])]
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
+        if userData['undoIndicator'][i] == 1: continue
+        if userData[]
         featureString = 'Top 5 Features: <br /> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br /> '
@@ -40,7 +42,7 @@ def fillLines(userData):
         if round(accChange,2) == 0: accChange = 0
         text = text + "%.2f (%s)"%(accChange,direction)
         undoInd = False
-        if userData['undoIndicator'][i-1] == 1: undoInd = True
+        if userData['undoIndicator'][i] == 1: undoInd = True
         linesLst.append({'backward': undoInd, 'info':text, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2})
     return linesLst
