@@ -20,6 +20,7 @@ html
 #VisHolder
 { 
   width: 800px;
+  height: 800px;
   float: left;
   border: 1px;
   border-style: solid;
@@ -29,21 +30,22 @@ html
 
 .OptionsHolder
 { 
-  float: left;
-  border: 0px;
+  text-align: center;
+  float: right;
+  /*border: 0px;
   border-top: 1px;
-  border-top-style: solid;
+  border-top-style: solid;*/
 }
 
 .SingleOption
 { 
   width: 198px;
-  float: left;
-  border-bottom: 1px;
+  float: center;
+  /*border-bottom: 1px;
   border-top: 0px;
   border-left: 2px;
   border-right: 0px;
-  border-style: solid;
+  border-style: solid;*/
 }
 
 .InfoBox
