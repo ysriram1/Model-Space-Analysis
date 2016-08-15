@@ -17,6 +17,7 @@
         newEntry.x = entry[1][0];
         newEntry.y = entry[1][1];
         newEntry.info = entry[2];
+        newEntry.acc = entry[3]; //Sriram: added to record the changes in accuracy.
         dotdata.push(newEntry);
       }
     }

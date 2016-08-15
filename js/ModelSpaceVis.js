@@ -15,7 +15,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     //var bDrawEndPoints = OPTS['DrawEndPoints'];
     //var bDrawDiamonds = OPTS['DrawDiamonds'];
     //var bDrawArrows = OPTS['DrawArrows'];
-
     var dotdata = userDots(userdata);
     var linedata = userLines(userdata);
     VisData.dotdata = dotdata;
@@ -28,9 +27,11 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 
     var fClrsUsers = d3.scale.category20();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
+    //Sriram: We dont need the dotDiam or lineThickness since we are setting those values dynamically
+
 
     var xOffset = 10, yOffset = 10,
-        dotDiam = 5, lineThick = 4;
+        dotDiam = 5;// lineThick = 4;
     
     // functions from data space to vis space
     var fScaleX = d3.scale.linear()
@@ -75,6 +76,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     dotdata = dotdata.filter( function(x){return userChecked(x.user);});
     linedata = linedata.filter( function(x){return userChecked(x.user);});
     
+    //var lineThick = linedata.x2
+
     // draw the lines
     var lineFunction = d3.svg.line()
        .x(function(d) { return fGetScaledX(d) ; })
@@ -97,7 +100,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                } else {
                  return dClrsUsers[d.user];
                } })
-       .attr("stroke-width", lineThick)
+       .attr("stroke-width", function(d){
+        return 2.5+d.count/7; //Sriram: dynamic width
+       })
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
        .on("click", function(d) { updateInfoBox(d.info);
@@ -122,7 +127,10 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .data(dotdata)
        .enter().append("circle")
        .attr("class", function(d){return "dot user" + d.user;})
-       .attr("r", dotDiam)
+       .attr("r", function(d){
+        if (d.acc < 0.9){return 5;
+        }else {return 5 + 100*(d.acc-0.91)}; //Sriram: dynamic radius 
+      })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
       .style("fill", function(d) {

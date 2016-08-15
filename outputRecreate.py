@@ -11,7 +11,8 @@ Created on Mon Aug  8 00:38:27 2016
 #userData = sampleFile2[1] #Just to test out
 
 def fillDFs(userData):
-    startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%userData['KNNAcc'][0])]
+    knnAcc = userData['KNNAcc'][0]
+    startTuple = [(0, userData['initLayoutPoint'], 'Starting... <br /> 5-NN Accuracy: %.2f'%knnAcc,knnAcc)]
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
         if userData['undoIndicator'][i] == 1: continue
@@ -19,7 +20,8 @@ def fillDFs(userData):
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br /> '
         text = 'DF Number %i <br /> 5-NN Accuracy: %.2f <br /> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
-        remainingTuples.append((i*5,points,text))
+        knnAcc = userData['KNNAcc'][i+1]
+        remainingTuples.append(((i+1)*5,points,text,knnAcc))
     return startTuple + remainingTuples
     
 
@@ -27,7 +29,8 @@ def fillLines(userData):
     linesLst = []
     pushj = 0
     for i, points in enumerate(userData['layouts']):
-        pointsMovedCount = ''
+        pointsMovedCount = 0
+        pointsMovedCountText = ''
         j = i + 1 #the pointsList starts with key 1 not 0
         pointsText = '<br /><u>Points Moved</u>: <br /> '        
         print j - pushj
@@ -56,10 +59,10 @@ def fillLines(userData):
             
             #set1 = '<u>Set 1</u>: ' + ','.join(allEntryLst[0]) + '<br \>'
             #set2 = '<u>Set 2</u>: ' + ','.join(allEntryLst[1])
-            pointsMovedCount ='(Total ' + str(sum([len(allEntryLst[index]) for index in\
-            range(len(allEntryLst))])) + ' points moved)<br>'#Counting the total number of points moved            
+            pointsMovedCount = sum([len(allEntryLst[index]) for index in range(len(allEntryLst))])
+            pointsMovedCountText ='(Total ' + str(pointsMovedCount) + ' points moved)<br>'#Counting the total number of points moved            
             pointAddText = set1 + set2
-        totalPointsText = pointsText + pointsMovedCount + pointAddText
+        totalPointsText = pointsText + pointsMovedCountText + pointAddText
         text = "<u>Accuracy Change</u>: "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
@@ -78,7 +81,7 @@ def fillLines(userData):
         undoInd = False
         if userData['undoIndicator'][i] == 1: undoInd = True
         linesLst.append({'backward': undoInd, 'info':text + totalPointsText, 
-        'x1':x1,'x2':x2,'y1':y1,'y2':y2, 'pointMoveCount':str(pointsMovedCount)})
+        'x1':x1,'x2':x2,'y1':y1,'y2':y2, 'count':pointsMovedCount})
     return linesLst
     
 def DFLinesDict(userData):
