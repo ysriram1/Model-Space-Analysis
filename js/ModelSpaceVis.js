@@ -30,8 +30,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     //Sriram: We dont need the dotDiam or lineThickness since we are setting those values dynamically
 
 
-    var xOffset = 10, yOffset = 10,
-        dotDiam = 5;// lineThick = 4;
+    var xOffset = 10, yOffset = 10;
+        //dotDiam = 5;// lineThick = 4;
     
     // functions from data space to vis space
     var fScaleX = d3.scale.linear()
@@ -145,7 +145,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                divTooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
-               divTooltip.html("<u>User: " + d.user + "</u><br/>"+
+               divTooltip.html("<b>User " + d.user + "</b><br/>"+
  			      d.info)
                       .style("left", (d3.event.pageX + 5) + "px")
                       .style("top", (d3.event.pageY - 28) + "px");

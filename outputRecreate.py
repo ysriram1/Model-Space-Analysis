@@ -19,7 +19,7 @@ def fillDFs(userData):
         featureString = '<u>Top 5 Features</u>: <br /> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br /> '
-        text = 'DF Number %i <br /> 5-NN Accuracy: %.2f <br /> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
+        text = 'DF Number: %i <br /> 5-NN Accuracy: %.2f <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
         knnAcc = userData['KNNAcc'][i+1]
         remainingTuples.append(((i+1)*5,points,text,knnAcc))
     return startTuple + remainingTuples
@@ -53,10 +53,9 @@ def fillLines(userData):
                     start = end
                     end = end + 6
                     setVals[index] += ', '.join(pointSet[start:end]) + '<br \>'
-                if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%6])
-            set1 = setVals[0] + '<br \>'
+                if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%6]) + '<br \>'
+            set1 = setVals[0]
             set2 = setVals[1]
-            
             #set1 = '<u>Set 1</u>: ' + ','.join(allEntryLst[0]) + '<br \>'
             #set2 = '<u>Set 2</u>: ' + ','.join(allEntryLst[1])
             pointsMovedCount = sum([len(allEntryLst[index]) for index in range(len(allEntryLst))])

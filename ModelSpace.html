@@ -92,7 +92,7 @@
 
  	      d3.select('#' + sOptName).selectAll("nodo")
                 .data(dUsers[userType]).enter()
-	         .append("div").attr("class", "opt")
+	         .append("span").attr("class", "opt") //Sriram: changed the 'div' to 'span' so that the userlist will collapse
                 .append("input")
                 .attr("onchange", function(d){return "updateVisVisible(" + d  + ")";})
                 .attr("type", "checkbox")
@@ -196,6 +196,7 @@
         -->
         <div id="ColorSearch" class="InfoBox">
         <b>Color by Search</b> <br>
+        Enter a feature name or data-point number.
 
 	    <input type="text" name="txtColorSearch" id="txtColorSearch"> <br>
             <input type="button" name="btnColorSearchDismiss" value="dismiss"
@@ -217,11 +218,11 @@
     </div>
 
     <div id="Info1" class="InfoBox RightOpts">
-	Info Pane
+	<b>Info Pane</b>
     </div>
 
     <div id="Info2" class="InfoBox RightOpts">
-        Info Pane
+        <b>Info Pane</b>  
     </div>
 
 <!--<div class="OptionsHolder RightOpts">

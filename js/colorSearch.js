@@ -3,6 +3,7 @@
 // Decorates the VisData with custom colors when search applies.
 function textSearchColor(searchBox, visSVGName) {
   var searchStr = document.getElementById(searchBox).value;
+  console.log(searchStr)
   var svg = d3.select(visSVGName)
 
   // go through each point and line 
