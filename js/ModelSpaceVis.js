@@ -145,7 +145,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                divTooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
-               divTooltip.html("<b>User " + d.user + "</b><br/>"+
+               divTooltip.html("<b>User " + d.user + "</b><br><br/>"+//Sriram: added additional line breaker and make user number bold
  			      d.info)
                       .style("left", (d3.event.pageX + 5) + "px")
                       .style("top", (d3.event.pageY - 28) + "px");

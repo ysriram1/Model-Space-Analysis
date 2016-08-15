@@ -16,10 +16,10 @@ def fillDFs(userData):
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
         if userData['undoIndicator'][i] == 1: continue
-        featureString = '<u>Top 5 Features</u>: <br /> '
+        featureString = '<u>Top 5 Features</u>: <br> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
-            featureString = featureString + featureName + '<br /> '
-        text = 'DF Number: %i <br /> 5-NN Accuracy: %.2f <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
+            featureString = featureString + featureName + '<br> '
+        text = 'DF Number: %i <br> 5-NN Accuracy: %.2f <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
         knnAcc = userData['KNNAcc'][i+1]
         remainingTuples.append(((i+1)*5,points,text,knnAcc))
     return startTuple + remainingTuples
@@ -32,7 +32,7 @@ def fillLines(userData):
         pointsMovedCount = 0
         pointsMovedCountText = ''
         j = i + 1 #the pointsList starts with key 1 not 0
-        pointsText = '<br /><u>Points Moved</u>: <br /> '        
+        pointsText = '<br><u>Points Moved</u>: <br> '        
         print j - pushj
         if userData['undoIndicator'][i] == 1: pointAddText = 'None(user used UNDO)'; pushj += 1; print pushj
         else: 
@@ -52,8 +52,8 @@ def fillLines(userData):
                 for cut in range(len(pointSet)//6):
                     start = end
                     end = end + 6
-                    setVals[index] += ', '.join(pointSet[start:end]) + '<br \>'
-                if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%6]) + '<br \>'
+                    setVals[index] += ', '.join(pointSet[start:end]) + '<br>'
+                if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%6]) + '<br>'
             set1 = setVals[0]
             set2 = setVals[1]
             #set1 = '<u>Set 1</u>: ' + ','.join(allEntryLst[0]) + '<br \>'
