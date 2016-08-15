@@ -1,17 +1,19 @@
 // Gets a reference to the VisData object and the name of a text
 // box the holds the search search string.
 // Decorates the VisData with custom colors when search applies.
-function textSearchColor(searchBox, visSVGName) {
+function textSearchColor(searchBox, visSVGName, LorD) {
   var searchStr = document.getElementById(searchBox).value;
   console.log(searchStr)
   var svg = d3.select(visSVGName)
 
   // go through each point and line 
-  svg.selectAll(".dot")
-    .style("fill", function(d) { return colorChoice(d, searchStr, 'dot'); }) //Sriram: added line and do args to differentiate (see colorChoice func)
-  svg.selectAll(".line")
-    .style("stroke", function(d) { return colorChoice(d, searchStr, 'line'); })
-
+  var radioFeature = document.getElementById('LorDFeature').checked //Sriram: checking the value of the radio buttons
+  var radioLine = document.getElementById('LorDPoint').checked
+  //console.log(radioFeature, radioLine)
+  if(radioFeature){svg.selectAll(".dot")//Sriram: added line and dot args to differentiate (see colorChoice func)
+    .style("fill", function(d) { return colorChoice(d, searchStr, 'dot'); })}
+  else if(radioLine){svg.selectAll(".line")
+    .style("stroke", function(d) { return colorChoice(d, searchStr, 'line'); })}
 }
 
 
@@ -32,9 +34,9 @@ function colorChoice(d, searchStr, type) {
   if(type == 'line'){ //Sriram: This is done in order to make sure we only color if there is a full match. i.e.
                       //if the query is '11', we dont want to match '111'
     var info = d.info.toLowerCase()
-    console.log(info)
+    //console.log(info)
     var infoItems = info.split('<br>')
-    console.log(infoItems)
+    //console.log(infoItems)
     var infoLstLength = infoItems.length
     var line
     for(var i = 0; i < infoLstLength; i++){

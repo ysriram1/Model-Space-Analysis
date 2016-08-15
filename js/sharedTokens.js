@@ -15,7 +15,7 @@ function updateSharedTokens(info, sType) {
   var newToks = [];
   var newLines = cleanLines(info);
   if (sType == "dot") {
-    newToks = newLines.slice(1); // just remove first
+    newToks = newLines.slice(4); // just remove first //Sriram: slice val changed from 1 to 4 to remove unwanted information
   }
 
   // empty current toks mean just add all the new ones
