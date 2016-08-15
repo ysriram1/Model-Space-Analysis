@@ -92,7 +92,7 @@
 
  	      d3.select('#' + sOptName).selectAll("nodo")
                 .data(dUsers[userType]).enter()
-	        .append("div").attr("class", "opt")
+	         .append("div").attr("class", "opt")
                 .append("input")
                 .attr("onchange", function(d){return "updateVisVisible(" + d  + ")";})
                 .attr("type", "checkbox")
@@ -204,7 +204,7 @@
                    onclick="textSearchColor('txtColorSearch', '#VIS');" >
         </div>
         <div id="SharedTokensBox" class="InfoBox" style="margin-top:20px">
-        <b>Shared Tokens</b> <br>
+        <b>Shared Features</b> <br>
         <div id="SharedTokens"></div>
         <input type="button" value="clear"
                onclick="updateSharedTokens(undefined, '')">
