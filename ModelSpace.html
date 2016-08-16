@@ -26,8 +26,8 @@
           <polyline points="0,0 10,5 0,10 1,5"  fill="black" />
         </marker>
         <marker id="inlineMarker" viewBox="0 0 10 10" refX="1" refY="5" 
-                markerUnits="strokeWidth" orient="auto"
-                markerWidth="1" markerHeight="1">
+                markerUnits="userSpaceOnUse" orient="auto"
+                markerWidth="10" markerHeight="10">
           <polyline points="0,0 10,5 0,10 1,5"  fill="black" />
         </marker>
         <marker id="circleMarker" viewBox="0 0 10 10" refX="0" refY="0" 
@@ -179,6 +179,7 @@
   </head>
 
   <body onload="createUserOptionPanel(); createColorOptionPanel(); reDraw();">
+  <div><h1  id='title'>Model Space </h1><div></div>
     <div id="MainBox">
     <form>
     <div id="LeftOptPanel" class="InfoBox LeftOpts">
