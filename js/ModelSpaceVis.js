@@ -147,7 +147,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       .style("fill", //Sriram: added code to change to varying shades of gray scale based on acc values
         function(d) {
           if(OPTS.grayScaleChecked){
-            colVal = 255-Math.round(255*(d.acc-0.88)*10);
+            colVal = 255-Math.round(255*(d.acc-0.88)*8.5);
             return d3.rgb(colVal, colVal, colVal); //returns a different shade of gray
           }else if (d.customColor) {
 		         return d.customColor;
