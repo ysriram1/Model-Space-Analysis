@@ -3,6 +3,14 @@
 function refreshVis() {
   if (userdata != []) {
     OPTS = getOptions();
+    var lineChecked = document.getElementById('showLines').checked;
+    var dotChecked = document.getElementById('showDots').checked;
+    var grayScaleChecked = document.getElementById('grayScale').checked;
+    
+    OPTS.lineChecked = lineChecked;
+    OPTS.dotChecked = dotChecked;
+    OPTS.grayScaleChecked = grayScaleChecked;
+
     drawVis(userdata, "#VIS", 800, 800, OPTS);
   }
 }
@@ -96,11 +104,12 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("class", function(d){return "line user" + d.user;})
       //.attr("d", function(d){return lineFunction(fTwoSegments(d));})
        .attr("stroke", function(d) {
-	       if (d.customColor) {
-		 return d.customColor;
-               } else {
-                 return dClrsUsers[d.user];
-               } })
+	        if (d.customColor) {
+		        return d.customColor;
+          } else {
+            return dClrsUsers[d.user];
+          }
+       })
        .attr("stroke-width", function(d){
         return 2.5+d.count/6; //Sriram: dynamic width
        })
@@ -123,6 +132,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .style("opacity", 0);
            })
 
+    if(!OPTS.lineChecked){svg.selectAll(".line").remove();} //Sriram: added this to remove lines with lineChecked is not checked.
+    
     // draw dots
     var dots = svg.selectAll(".dot")
        .data(dotdata)
@@ -133,12 +144,16 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
-      .style("fill", function(d) {
-	               if (d.customColor) {
+      .style("fill", //Sriram: added code to change to varying shades of gray scale based on acc values
+        function(d) {
+          if(OPTS.grayScaleChecked){
+            colVal = 255-Math.round(255*(d.acc-0.88)*10);
+            return d3.rgb(colVal, colVal, colVal); //returns a different shade of gray
+          }else if (d.customColor) {
 		         return d.customColor;
-                       } else {
-                         return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
-                       } })  
+            } else {
+                return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
+                  } })  
        .on("click", function(d) { updateInfoBox(d.info);
                                   updateSharedTokens(d.info, 'dot'); })
        .on("mouseover", function(d) {
@@ -157,7 +172,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                     .style("opacity", 0);
            })
        .attr("transform", fTransform);
-
+    
+    if(!OPTS.dotChecked){svg.selectAll(".dot").remove();}//Sriram: added this to remove dots when dotChecked is not checked.
      
     fZoom(lines); // initial positioning calculation
   
