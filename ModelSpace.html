@@ -15,10 +15,12 @@
     <script src="/ModelSpace/js/join.js"></script>
     <script src="/ModelSpace/js/halfwayBump.js"></script>
     <script src="/ModelSpace/js/sharedTokens.js"></script>
+    <script src="/ModelSpace/js/displayOptions.js"></script>
+
 
     <!-- svg region to define arrow markers, with thanks to
          http://apike.ca/prog_svg_markers.html -->
-    <svg height="0" width="0">
+    <svg height="0" width="0"> 
       <defs>
         <marker id="myMarker" viewBox="0 0 10 10" refX="1" refY="5" 
                 markerUnits="strokeWidth" orient="auto"
@@ -27,7 +29,7 @@
         </marker>
         <marker id="inlineMarker" viewBox="0 0 10 10" refX="1" refY="5" 
                 markerUnits="userSpaceOnUse" orient="auto"
-                markerWidth="10" markerHeight="10">
+                markerWidth="7" markerHeight="7">
           <polyline points="0,0 10,5 0,10 1,5"  fill="black" />
         </marker>
         <marker id="circleMarker" viewBox="0 0 10 10" refX="0" refY="0" 
@@ -105,6 +107,7 @@
           }
       }
 
+   
       
       // create option panel for colors
       function createColorOptionPanel() {
@@ -174,12 +177,37 @@
                   refreshVis();
            });
       }
+      /*  
+      //Sriram: Function for the options Panel:
+      function displayOptions(){
+          var lineChecked = document.getElementById('showLines').checked
+          var dotChecked = document.getElementById('showDots').checked
+          var grayScaleChecked = document.getElementById('grayScale').checked
+          
+          svg.selectAll(".dot").remove();
+          svg.selectAll(".line").remove();
+
+          if(lineChecked & dotChecked){
+            refreshVis()
+          }
+          if(lineChecked & !dotChecked){
+            refreshVis()
+            svg.selectAll(".dot").remove()
+          }
+          if(!lineChecked & dotChecked){
+            refreshVis()
+            svg.selectAll(".line").remove()
+          }
+        }*/
     </script>
 
   </head>
 
   <body onload="createUserOptionPanel(); createColorOptionPanel(); reDraw();">
-  <div><h1  id='title'>Model Space </h1><div></div>
+    
+
+    <div><h1  id='title'>Model Space </h1><div></div> <!--Sriram added this to include heading -->
+
     <div id="MainBox">
     <form>
     <div id="LeftOptPanel" class="InfoBox LeftOpts">
@@ -195,6 +223,16 @@
             <div id="divColorOptions"></div>
         </div>
         -->
+          <div id="lineDotSelector" class="InfoBox">
+            <b>Display Options</b> <br>
+            <!--Sriram: added this for check box -->
+              <input type="checkbox" name="showLines" value="lines" checked="checked" id="showLines"> Show Lines<br>
+              <input type="checkbox" name="showDots" value="dots" checked="checked" id="showDots"> Show Dots<br>
+              <input type="checkbox" name="grayScaleDots" value="grayScale" id="grayScale"> Color Dots in GrayScale <br>
+              <input type="button" name="btnDisplayOptions" value="submit" onclick="displayOptions('#VIS')">
+            
+          </div>
+
         <div id="ColorSearch" class="InfoBox">
         <b>Color by Search</b> <br>
         Enter a feature name or data-point number.
@@ -244,6 +282,7 @@
 
     </div> <!-- options holder bottom -->
     </form>  <!-- choice of users -->
+    
 
     </div> <!-- main box -->
   </body>

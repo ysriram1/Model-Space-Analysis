@@ -7,10 +7,27 @@
   left: 45%;
 }
 
+#lineDotSelector{
+  float:left;
+  /*background:#99ffff;*/
+  border-top: 0px;
+  border-top-style: none;
+}
+
+#colorSearch{
+  float:left;
+  margin: 10px;
+  /*background:#99ffff;*/
+}
 
 html
 {
   overflow-y: scroll;
+}
+
+#LeftOptPanel{
+  padding: 8px;
+  margin: 10px;
 }
 
 #MainBox

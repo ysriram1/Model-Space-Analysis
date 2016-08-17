@@ -15,6 +15,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     //var bDrawEndPoints = OPTS['DrawEndPoints'];
     //var bDrawDiamonds = OPTS['DrawDiamonds'];
     //var bDrawArrows = OPTS['DrawArrows'];
+
     var dotdata = userDots(userdata);
     var linedata = userLines(userdata);
     VisData.dotdata = dotdata;
@@ -101,7 +102,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                  return dClrsUsers[d.user];
                } })
        .attr("stroke-width", function(d){
-        return 2.5+d.count/7; //Sriram: dynamic width
+        return 2.5+d.count/6; //Sriram: dynamic width
        })
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
@@ -128,8 +129,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .enter().append("circle")
        .attr("class", function(d){return "dot user" + d.user;})
        .attr("r", function(d){
-        if (d.acc < 0.9){return 5;
-        }else {return 5 + 100*(d.acc-0.91)}; //Sriram: dynamic radius 
+          return 37*Math.sqrt(d.acc-0.88); //Sriram: dynamic radius (lowest acc value was around 0.88)
       })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
