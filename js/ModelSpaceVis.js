@@ -163,8 +163,11 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                   tempDFNo = str.slice(11,13);
                                   tempName = ".dot.user" + d.user+".df"+tempDFNo; console.log(tempName); //creating temp identifier
                                   svg.selectAll(tempName)
+                                      //.attr('r',12)
+                                      //.style("fill", "transparent")       
+                                      //.style("stroke", "red");  
                                       //.attr('r',100)
-                                      .style('fill',d3.rgb('#000')); //Sriram:changes the color to black upon click
+                                      .style('fill',d3.rgb('blue')); //Sriram:changes the color to black upon click
                                   })
        .on("mouseover", function(d) {
                divTooltip.transition()
