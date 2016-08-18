@@ -142,6 +142,39 @@ for logID in ['10','11','1','2','4','5','6','7','8','9']:
     print start, ' ', end
     lstDict[logID] = vectorMat[start:end]
     start = end
+    
+################################Data Manipulation for TSNE
+###We perform TSNE by taking the arrays projecting them as long as they arent different and then checking the vals
+'''
+duplicateIndices = {}
+for i in range(len(vectorMat)):
+    for j in range(i+1, len(vectorMat)):
+        if np.sum(vectorMat[i] == vectorMat[j]) == len(vectorMat[j]):
+            if i in duplicateIndices.keys(): duplicateIndices[i].append(j)
+            else:  duplicateIndices[i] = []; duplicateIndices[i].append(j)
+
+uniqueVecMat = np.array(list(set([tuple(row) for row in vectorMat]))) #This only contains the unique elements
+'''
+redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
+
+changes = 0
+for i in range(1,len(vectorMat)):
+    for j in range(i+1,len(vectorMat)):
+        if np.sum(vectorMat[i] == vectorMat[j]) == len(vectorMat[j]):
+            if np.sum(redVectorMat[j] == redVectorMat[i]) < len(redVectorMat[i]):
+                changes += 1
+                redVectorMat[j] = redVectorMat[i]
+
+start = 0; end = 0 
+TSNEresultDict = {}
+for logID in ['10','11','1','2','4','5','6','7','8','9']:
+    end = end + lstCounts[logID]
+    TSNEresultDict[logID] = redVectorMat[start:end]
+    start = end
+
+
+
+################################
 
 knnDict = {}
 for logID in lstDict.keys():
@@ -214,6 +247,7 @@ fig = plt.figure(figsize=(17,17))
 ax = fig.add_subplot(111)
 
 for color, logID in zip(colors,MDSresultDict.keys()):
+    if logID != '4': continue
     name = 'User' + logID
     MDSVals = MDSresultDict[logID]
     ax.scatter(MDSVals[:,0], MDSVals[:,1], color = 'b', s=40)

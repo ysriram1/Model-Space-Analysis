@@ -101,7 +101,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     var lines = svg.selectAll(".line")
        .data(linedata)
        .enter().append("path")
-       .attr("class", function(d){return "line user" + d.user;})
+       .attr("class", function(d){return "line user" + d.user;}) 
       //.attr("d", function(d){return lineFunction(fTwoSegments(d));})
        .attr("stroke", function(d) {
 	        if (d.customColor) {
@@ -116,7 +116,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
        .on("click", function(d) { updateInfoBox(d.info);
-                                  updateSharedTokens(d.info, 'line'); })
+                                  updateSharedTokens(d.info, 'line');
+                                  }) 
        .on("mouseover", function(d) {
               divTooltip.transition()
                    .duration(200)
@@ -138,7 +139,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     var dots = svg.selectAll(".dot")
        .data(dotdata)
        .enter().append("circle")
-       .attr("class", function(d){return "dot user" + d.user;})
+       .attr("class", function(d){  str = d.info;
+                                    DFNo = str.slice(11,13);
+                                    return "dot user" + d.user +" DF"+ DFNo;})//Sriram: adding DFNo to be further specific
        .attr("r", function(d){
           return 37*Math.sqrt(d.acc-0.88); //Sriram: dynamic radius (lowest acc value was around 0.88)
       })
@@ -155,7 +158,14 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                 return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
                   } })  
        .on("click", function(d) { updateInfoBox(d.info);
-                                  updateSharedTokens(d.info, 'dot'); })
+                                  updateSharedTokens(d.info, 'dot');
+                                  str = d.info;
+                                  tempDFNo = str.slice(11,13);
+                                  tempName = ".dot.user" + d.user+".df"+tempDFNo; console.log(tempName); //creating temp identifier
+                                  svg.selectAll(tempName)
+                                      //.attr('r',100)
+                                      .style('fill',d3.rgb('#000')); //Sriram:changes the color to black upon click
+                                  })
        .on("mouseover", function(d) {
                divTooltip.transition()
                     .duration(200)

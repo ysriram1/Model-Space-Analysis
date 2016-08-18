@@ -4,6 +4,7 @@ function updateSharedTokens(info, sType) {
   var toksDiv = elem('SharedTokens');
   var currStr = toksDiv.innerHTML;
   var currToks = cleanLines(currStr);
+  console.log(currStr);
 
   // empty input string means clear the box
   if (info == undefined) {
@@ -16,6 +17,7 @@ function updateSharedTokens(info, sType) {
   var newLines = cleanLines(info);
   if (sType == "dot") {
     newToks = newLines.slice(4); // just remove first //Sriram: slice val changed from 1 to 4 to remove unwanted information
+    console.log(newLines);
   }
 
   // empty current toks mean just add all the new ones

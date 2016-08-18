@@ -31,4 +31,4 @@ def send_css(fname):
 def send_css(fname):
     return static_file(fname, root='./svg/')
 
-run(host='0.0.0.0', port=11319, debug=True, reloader=True)
+run(host='127.0.0.1', port=11319, debug=True, reloader=True) #Sriram: Changed ip to localhost from 0.0.0.0
