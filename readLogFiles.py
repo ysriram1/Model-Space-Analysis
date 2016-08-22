@@ -247,19 +247,19 @@ fig = plt.figure(figsize=(17,17))
 ax = fig.add_subplot(111)
 
 for color, logID in zip(colors,MDSresultDict.keys()):
-    if logID != '4': continue
     name = 'User' + logID
+    if logID not in ['2','6','7','9']: continue
     MDSVals = MDSresultDict[logID]
     ax.scatter(MDSVals[:,0], MDSVals[:,1], color = 'b', s=40)
     ax.plot(MDSVals[:,0], MDSVals[:,1], '-', color = color, label = name, linewidth=4)
 
 
 ax.legend()
-plt.xlabel('MDS Proj 1'); plt.ylabel('MDS Proj 2')
-plt.title('MDS Solution Vectors for Diffirent Users of Disfunction')
+plt.xlabel('TSNE Proj 1'); plt.ylabel('TSNE Proj 2')
+plt.title('TSNE Solution Vectors for Diffirent Users of Disfunction')
 plt.legend(prop={'size':20}, bbox_to_anchor=(1,1))
 plt.tight_layout(pad=7)
-plt.savefig('./MDSOutput.png')
+plt.savefig('./TSNEOutput.png')
 
     
 
