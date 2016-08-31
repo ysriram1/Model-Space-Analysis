@@ -2,20 +2,14 @@
 
 function refreshVis() {
   if (userdata != []) {
-
     OPTS = getOptions();
-    clearTokenBox();//Sriram:Added this to clear infoBox First 
     var lineChecked = document.getElementById('showLines').checked;
     var dotChecked = document.getElementById('showDots').checked;
-    var groupChecked = document.getElementById('colorByGroup').checked;
-    var lineColChecked = document.getElementById('colorByCount').checked;
-    var lineThickChecked = document.getElementById('widthByCount').checked;
-
+    var grayScaleChecked = document.getElementById('grayScale').checked;
+    
     OPTS.lineChecked = lineChecked;
     OPTS.dotChecked = dotChecked;
-    OPTS.groupChecked = groupChecked;
-    OPTS.lineColChecked = lineColChecked;
-    OPTS.lineThickChecked = lineThickChecked;
+    OPTS.grayScaleChecked = grayScaleChecked;
 
     drawVis(userdata, "#VIS", 800, 800, OPTS);
   }
@@ -39,24 +33,14 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         getY = function(d) {return d.y;},
         dotXs = dotdata.map(getX),
         dotYs = dotdata.map(getY);
-    if(!OPTS.groupChecked){
+
     var fClrsUsers = d3.scale.category20();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
-    }
+    //Sriram: We dont need the dotDiam or lineThickness since we are setting those values dynamically
 
-    if(OPTS.groupChecked){//Sriram: if gorup is checked color selection process:
-    dUserGroup = {4:1, 7:1, 11:1, 13:1, 3:2, 10:2, 2:3, 9:3, 6:4}
 
-    //'SandE': [4,7,11,13]
-    //'Professionals': [3,10]
-    //'Interns': [2,9],
-    //'Other': [6]
-    var fClrsUsers = d3.scale.category20();
-    dClrsUsers = mapColors(dotdata, fClrsUsers);
-    }
-
-    var xOffset = 10, yOffset = 10,
-        dotDiam = 6, lineThick = 4;
+    var xOffset = 10, yOffset = 10;
+        //dotDiam = 5;// lineThick = 4;
     
     // functions from data space to vis space
     var fScaleX = d3.scale.linear()
@@ -78,9 +62,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                       .style("position", "absolute")
                                       .style("width", "200px")
                                       .style("background-color", "#ee0")
-                                      .style("pointer-events", "none")
-                                      .style("padding","8px") //Sriram: Added this to include some padding on the boxes
-                                      .style("border-radius","10px");//Sriram: Added this to have rounded corners on the info boxes
+                                      .style("pointer-events", "none");
 
     var svg = d3.select(anchorname)
       //.append("g") // svg group and .call are for zooming
@@ -91,10 +73,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
             .on("zoom", fZoom));
 
     svg.append("rect") // background rect means zoom affects whole area
-      .attr("width", W) //W:800px, H:800px
+      .attr("width", W)
       .attr("height", H)
       .attr("fill", "transparent")
-
 
     // remove old dots and lines
     svg.selectAll(".dot").remove();
@@ -104,12 +85,14 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     dotdata = dotdata.filter( function(x){return userChecked(x.user);});
     linedata = linedata.filter( function(x){return userChecked(x.user);});
     
+    //var lineThick = linedata.x2
+
     // draw the lines
     var lineFunction = d3.svg.line()
        .x(function(d) { return fGetScaledX(d) ; })
        .y(function(d) { return fGetScaledY(d) ; })
        .interpolate("cardinal");
-    var fTwoSegments = function(ld) { // turn one linedatum into 2 fTwoSegmentsnts
+    var fTwoSegments = function(ld) { // turn one linedatum into 2 segments
        return [ { x:ld.x1, y:ld.y1 },
                 halfwayBump(ld, ld['backward']),
                 //{ x:ld.x1 + (ld.x2-ld.x1)/2, y:ld.y1 + (ld.y2-ld.y1)/2 },
@@ -118,30 +101,23 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     var lines = svg.selectAll(".line")
        .data(linedata)
        .enter().append("path")
-       .attr("class", function(d){return "line user" + d.user;})
+       .attr("class", function(d){return "line user" + d.user;}) 
       //.attr("d", function(d){return lineFunction(fTwoSegments(d));})
        .attr("stroke", function(d) {
-	       if (d.customColor) {
-		 return d.customColor;
-               } else { if(OPTS.lineColChecked){ //Sriram: This is added to change the coloring of the lines
-                colVal = Math.round(255/75 * (75-d.count));
-                return d3.rgb(colVal,colVal,colVal); //higher readcount means darker lines
-               }
-               if(OPTS.groupChecked){ //Sriram: this is done to group entire color the same
-                  return dClrsUsers[dUserGroup[d.user]];
-               }
-                 return dClrsUsers[d.user];
-               } })
-       .attr("stroke-width", function(d){ //Sriram:Added this to accomadate varying line width based on read count
-            if(OPTS.lineThickChecked){
-            return 2.5+d.count/7;}else{
-              return lineThick;
-            }
+	        if (d.customColor) {
+		        return d.customColor;
+          } else {
+            return dClrsUsers[d.user];
+          }
+       })
+       .attr("stroke-width", function(d){
+        return 2.5+d.count/6; //Sriram: dynamic width
        })
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
        .on("click", function(d) { updateInfoBox(d.info);
-                                  updateSharedTokens(d.info, 'line'); })
+                                  updateSharedTokens(d.info, 'line');
+                                  }) 
        .on("mouseover", function(d) {
               divTooltip.transition()
                    .duration(200)
@@ -158,34 +134,35 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
            })
 
     if(!OPTS.lineChecked){svg.selectAll(".line").remove();} //Sriram: added this to remove lines with lineChecked is not checked.
-
-
+    
     // draw dots
     var dots = svg.selectAll(".dot")
        .data(dotdata)
        .enter().append("circle")
-       .attr("class", function(d){str = d.info;
-                                    DFNo = str.slice(17,19);
-                                    return "dot user" + d.user +" DF"+ DFNo;
-                                    
-                            //      return "dot user" + d.user;
-                                 })
-       .attr("r", dotDiam)
+       .attr("class", function(d){  str = d.info;
+                                    DFNo = str.slice(11,13);
+                                    return "dot user" + d.user +" DF"+ DFNo;})//Sriram: adding DFNo to be further specific
+       .attr("r", function(d){
+          return 37*Math.sqrt(d.acc-0.88); //Sriram: dynamic radius (lowest acc value was around 0.88)
+      })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
-      .style("fill", function(d) {
-	               if (d.customColor) {
+      .style("fill", //Sriram: added code to change to varying shades of gray scale based on acc values
+        function(d) {
+          if(OPTS.grayScaleChecked){
+            svg.selectAll(".dot")
+              .attr("r", 8)//Sriram: This resets the size of the dots to the same size (8).
+            colVal = 255-Math.round(255*(d.acc-0.88)*8.5);
+            return d3.rgb(colVal, colVal, colVal); //returns a different shade of gray
+          }else if (d.customColor) {
 		         return d.customColor;
-                       } else { if(OPTS.groupChecked){ //Sriram: this is done to group entire color the same
-                  return dClrsUsers[dUserGroup[d.user]];
-               }
-                         return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
-                       } })  
+            } else {
+                return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
+                  } })  
        .on("click", function(d) { updateInfoBox(d.info);
-                                  newDfInfo = d.info.slice(50,9999999) //Sriram: Adding this to ignore "Top key words"
-                                  updateSharedTokens(newDfInfo, 'dot'); 
-                                  str = d.info; console.log(str);
-                                  tempDFNo = str.slice(17,19);
+                                  updateSharedTokens(d.info, 'dot');
+                                  str = d.info;
+                                  tempDFNo = str.slice(11,13);
                                   tempName = ".dot.user" + d.user+".df"+tempDFNo; console.log(tempName); //creating temp identifier
                                   svg.selectAll(tempName)
                                       //.attr('r',12)
@@ -193,12 +170,12 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                       //.style("stroke", "red");  
                                       //.attr('r',100)
                                       .style('fill',d3.rgb('blue')); //Sriram:changes the color to black upon click
-                                    })
+                                  })
        .on("mouseover", function(d) {
                divTooltip.transition()
                     .duration(200)
                     .style("opacity", .9);
-               divTooltip.html("<b style='font-size:20px;'>User " + d.user + "</b>"+
+               divTooltip.html("<b>User " + d.user + "</b><br><br/>"+//Sriram: added additional line breaker and make user number bold
  			      d.info)
                       .style("left", (d3.event.pageX + 5) + "px")
                       .style("top", (d3.event.pageY - 28) + "px");
@@ -210,9 +187,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                     .style("opacity", 0);
            })
        .attr("transform", fTransform);
-
+    
     if(!OPTS.dotChecked){svg.selectAll(".dot").remove();}//Sriram: added this to remove dots when dotChecked is not checked.
-
+     
     fZoom(lines); // initial positioning calculation
   
     function fZoom() {
@@ -221,7 +198,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         svg.selectAll(".line")
            .attr("d",  function(d){return lineFunction(fTwoSegments(d));});
     }
-
 
     function fTransform(d) {
       return "translate(" + fGetScaledX(d) + "," + fGetScaledY(d) + ")";

@@ -43,3 +43,7 @@ function cleanLines(S) {
           .replace(/<br \/>/g, "<br>")
           .split("<br>");
 }
+
+function clearTokenBox(){ //Sriram:Added this to clear the token box
+  return updateSharedTokens("")
+}

@@ -15,6 +15,8 @@
     <script src="/ModelSpace/js/join.js"></script>
     <script src="/ModelSpace/js/halfwayBump.js"></script>
     <script src="/ModelSpace/js/sharedTokens.js"></script>
+   <!-- <script src="/ModelSpace/js/displayOptions.js"></script>-->
+
 
     <!-- svg region to define arrow markers, with thanks to
          http://apike.ca/prog_svg_markers.html -->
@@ -39,7 +41,7 @@
                 markerUnits="strokeWidth" orient="auto"
                 markerWidth="1" markerHeight="1">
           <line x1="0" y1="0" x2="10" y2="10" stroke="red" />
-    <line x1="0" y1="10" x2="10" y2="0" stroke="red" /> 
+	  <line x1="0" y1="10" x2="10" y2="0" stroke="red" /> 
         </marker>
       </defs>
     </svg>
@@ -64,12 +66,6 @@
               infoBox = 1;
           }
       }
-
-      //Sriram:Clear Info box
-      function clearInfoBox() {
-            elem('Info1').innerHTML = '';
-            elem('Info2').innerHTML = '';
-      }
       
       // run on startup to create the user options
       // example:
@@ -78,39 +74,27 @@
       //  </div>
       //-->
       function createUserOptionPanel() {
-          var dUsers = { 
-                      'Undergrads': [1,5,6,8,9],
+          var dUsers = { 'Undergrads': [1,5,6,8,9],
                           'Masters': [10],  
                          'PhDs': [2,4,7,11] 
-                       };
+                          //'Students':[1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
+                        };
           for (var userType in dUsers) {
               var sOptName = 'opt' + userType;
               var optDiv = d3.select('#UserOptionsHolder').append("div");
-
               optDiv.attr("id", sOptName)
                     .attr("class", "SingleOption");
-                    //.style('padding','5px');
-	             optDiv.append("input")
+	      optDiv.append("input")
                     .attr("id", "chkGrp" + userType)
                     .attr("type", "checkbox")
                     .attr("checked", "false")
                     .attr("onclick", "markUsers('" + userType + "')");
               optDiv.append("label")
-                    .html("<b style='font-size:19px;'>"+userType+":</b><br />");
-              //optDiv.append("input")
-                //    .attr("id", "chkGrp" + userType)
-                  //  .attr('type',"checkbox")
-                    //.attr("class","colorAll")
-                    //.attr("checked", "true")
-                    //.attr("onclick", "colorUsers('" + userType + "')");
-              //optDiv.append("label")
-                //    .style('font-size','14')
-                  //  .html("Color By Group");
-
+                    .html("<u>"+userType+":</u><br />");
 
  	      d3.select('#' + sOptName).selectAll("nodo")
                 .data(dUsers[userType]).enter()
-	        .append("div").attr("class", "opt")
+	         .append("span").attr("class", "opt") //Sriram: changed the 'div' to 'span' so that the userlist will collapse
                 .append("input")
                 .attr("onchange", function(d){return "updateVisVisible(" + d  + ")";})
                 .attr("type", "checkbox")
@@ -123,6 +107,7 @@
           }
       }
 
+   
       
       // create option panel for colors
       function createColorOptionPanel() {
@@ -192,15 +177,40 @@
                   refreshVis();
            });
       }
+      /*  
+      //Sriram: Function for the options Panel:
+      function displayOptions(){
+          var lineChecked = document.getElementById('showLines').checked
+          var dotChecked = document.getElementById('showDots').checked
+          var grayScaleChecked = document.getElementById('grayScale').checked
+          
+          svg.selectAll(".dot").remove();
+          svg.selectAll(".line").remove();
+
+          if(lineChecked & dotChecked){
+            refreshVis()
+          }
+          if(lineChecked & !dotChecked){
+            refreshVis()
+            svg.selectAll(".dot").remove()
+          }
+          if(!lineChecked & dotChecked){
+            refreshVis()
+            svg.selectAll(".line").remove()
+          }
+        }*/
     </script>
 
   </head>
 
   <body onload="createUserOptionPanel(); createColorOptionPanel(); reDraw();">
+    
+
     <div><h1  id='title'>ModelSpace </h1><div></div> <!--Sriram added this to include heading -->
+
     <div id="MainBox">
     <form>
-    <div id="LeftOptPanel" class="InfoBox TopInfoBox LeftOpts InfoBoxContainer">
+    <div id="LeftOptPanel" class="InfoBox LeftOpts">
         <!--
         <b>Color Options</b>
         <div id="UserColorOpt" class="InfoBox SmallLeftOpt">
@@ -213,33 +223,35 @@
             <div id="divColorOptions"></div>
         </div>
         -->
-         <div id="lineDotSelector" class="InfoBox TopInfoBox">
+          <div id="lineDotSelector" class="InfoBox">
             <b>Display Options</b> <br>
             <!--Sriram: added this for check box -->
               <input type="checkbox" name="showLines" value="lines" checked="checked" id="showLines"> Show Lines<br>
               <input type="checkbox" name="showDots" value="dots" checked="checked" id="showDots"> Show Dots<br>
-              <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup"> Color by Group<br>
-              <input type="checkbox" name="lineColor" value="colorByCount" id="colorByCount"> Color by Read Count<br>
-              <input type="checkbox" name="lineWidth" value="widthByCount" id="widthByCount"> Width by Read Count<br>
-
-              <input style='margin-top:5px' type="button" name="btnDisplayOptions" value="Submit" onclick="refreshVis()">
+              <input type="checkbox" name="grayScaleDots" value="grayScale" id="grayScale"> Color Dots in GrayScale <br>
+              <input type="button" name="btnDisplayOptions" value="submit" onclick="refreshVis()">
             
           </div>
+
         <div id="ColorSearch" class="InfoBox">
         <b>Color by Search</b> <br>
-        Enter a Keyword or Document Name
+        Enter a feature name or data-point number.
 
-	    <input style='margin-bottom:6px; margin-top:6px;' type="text" name="txtColorSearch" id="txtColorSearch"> <br>
-            <input type="button" name="btnColorSearchDismiss" value="Dismiss"
-                   onclick="textSearchColorReset('#VIS')" >
-            <input type="button" name="btnColorSearch" value="Search"
-                   onclick="textSearchColor('txtColorSearch', '#VIS');" >
+	    <input type="text" name="txtColorSearch" id="txtColorSearch"> <br>
+            <input type="radio" name="lineVSdot" value="feature" id="LorDFeature" checked> Feature <!--Sriram: Added radio button so that user can chose whether to go with feature search or datapoint search-->
+            <input type="radio" name="lineVSdot" value="dataPoint" id="LorDPoint"> Data Point <br>
+
+            <input type="button" name="btnColorSearchDismiss" value="dismiss"
+                   onclick="textSearchColorReset('#VIS')">
+            
+            <input type="button" name="btnColorSearch" value="search"
+                   onclick="textSearchColor('txtColorSearch', '#VIS', 'lineVSdot');" >
         </div>
-        <div id="SharedTokensBox" class="InfoBox">
-        <b>Shared Keywords</b> <br>
-        <div style="margin-bottom: 6px; margin-top: 3px;" id="SharedTokens"></div>
-        <input type="button" value="Clear"
-               onclick="refreshVis()"> <!--Sriram: Added this to remove the blue highlighting -->
+        <div id="SharedTokensBox" class="InfoBox" style="margin-top:20px">
+        <b>Shared Features</b> <br>
+        <div id="SharedTokens"></div>
+        <input type="button" value="clear"
+               onclick="updateSharedTokens(undefined, ''); refreshVis();"> <!--Refresh Vis added to reset color of selected dots-->
         </div>
     </div>
     </form>
@@ -248,17 +260,13 @@
     <svg id="VIS" width="800" height="800"></svg>
     </div>
 
- <!-- Sriram: New Div created to add "clear" option -->
-      <div id="Info1" class="InfoBox TopInfoBox RightOpts">
-  	       <b style='font-size:16px; padding-left: 3px;'> Info Pane 1 </b>
-      </div>
+    <div id="Info1" class="InfoBox RightOpts">
+	<b>Info Pane</b>
+    </div>
 
-      <div id="Info2" class="InfoBox RightOpts">
-          <b style='font-size:16px; padding-left: 3px;'> Info Pane 2 </b>
-      </div>
-      <div id='clearInfo'>
-      <input style='margin-left:50px; margin-top:10px;' type="button" value="Clear Info Boxes" onclick="clearInfoBox()">
-      </div>
+    <div id="Info2" class="InfoBox RightOpts">
+        <b>Info Pane</b>  
+    </div>
 
 <!--<div class="OptionsHolder RightOpts">
     <button type="button" id="GO"
@@ -274,6 +282,7 @@
 
     </div> <!-- options holder bottom -->
     </form>  <!-- choice of users -->
+    
 
     </div> <!-- main box -->
   </body>
