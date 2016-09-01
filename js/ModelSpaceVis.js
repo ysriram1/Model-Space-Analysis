@@ -5,17 +5,39 @@ function refreshVis() {
 
     OPTS = getOptions();
     clearTokenBox();//Sriram:Added this to clear infoBox First 
+    //Opts for Line
+    var shadeOptsL = document.getElementById("shadeOpts_L");
+    var shadeStateL = shadeOptsL.options[shadeOptsL.selectedIndex].value;
+
+    var widthOptsL = document.getElementById("widthOpts_L");
+    var widthStateL = widthOptsL.options[widthOptsL.selectedIndex].value;
+    //Opts for Dot
+    var shadeOptsD = document.getElementById("shadeOpts_D");
+    var shadeStateD = shadeOptsD.options[shadeOptsD.selectedIndex].value;
+
+    var widthOptsD = document.getElementById("widthOpts_D");
+    var widthStateD = widthOptsD.options[widthOptsD.selectedIndex].value;
+
+
     var lineChecked = document.getElementById('showLines').checked;
     var dotChecked = document.getElementById('showDots').checked;
     var groupChecked = document.getElementById('colorByGroup').checked;
-    var lineColChecked = document.getElementById('colorByCount').checked;
-    var lineThickChecked = document.getElementById('widthByCount').checked;
 
     OPTS.lineChecked = lineChecked;
     OPTS.dotChecked = dotChecked;
     OPTS.groupChecked = groupChecked;
-    OPTS.lineColChecked = lineColChecked;
-    OPTS.lineThickChecked = lineThickChecked;
+
+    OPTS.lineColNoneChecked_s_l = shadeStateL == "none_s_l";
+    OPTS.lineColMoveChecked_s_l = shadeStateL == "moveCount_s_l";
+
+    OPTS.lineColNoneChecked_t_l = widthStateL == "none_t_l";
+    OPTS.lineColMoveChecked_t_l = widthStateL == "moveCount_t_l";
+
+    OPTS.dotColNoneChecked_s_d = shadeStateD == "none_s_d";
+    OPTS.dotColAccChecked_s_d = shadeStateD == "accuracy_s_d";
+
+    OPTS.dotRadNoneChecked_t_d = widthStateD == "none_t_d";
+    OPTS.dotRadAccChecked_t_d = widthStateD == "accuracy_t_d";
 
     drawVis(userdata, "#VIS", 800, 800, OPTS);
   }
@@ -44,14 +66,10 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     dClrsUsers = mapColors(dotdata, fClrsUsers);
     }
 
-    if(OPTS.groupChecked){//Sriram: if gorup is checked color selection process:
-    dUserGroup = {4:1, 7:1, 11:1, 13:1, 3:2, 10:2, 2:3, 9:3, 6:4}
+    if(OPTS.groupChecked){//Sriram: if group is checked color selection process:
+    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:2,2:3,4:3,7:3,11:3}
 
-    //'SandE': [4,7,11,13]
-    //'Professionals': [3,10]
-    //'Interns': [2,9],
-    //'Other': [6]
-    var fClrsUsers = d3.scale.category20();
+    var fClrsUsers = d3.scale.category10();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
     }
 
@@ -123,21 +141,15 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("stroke", function(d) {
 	       if (d.customColor) {
 		 return d.customColor;
-               } else { if(OPTS.lineColChecked){ //Sriram: This is added to change the coloring of the lines
-                colVal = Math.round(255/75 * (75-d.count));
-                return d3.rgb(colVal,colVal,colVal); //higher readcount means darker lines
-               }
-               if(OPTS.groupChecked){ //Sriram: this is done to group entire color the same
-                  return dClrsUsers[dUserGroup[d.user]];
-               }
-                 return dClrsUsers[d.user];
-               } })
+               } else 
+          { if(OPTS.lineColNoneChecked_s_l){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[d.user];}}
+            if(OPTS.lineColMoveChecked_s_l){colVal = Math.round(255/90 * (80-d.count));return d3.rgb(colVal,colVal,colVal); }
+            if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}
+          } })
        .attr("stroke-width", function(d){ //Sriram:Added this to accomadate varying line width based on read count
-            if(OPTS.lineThickChecked){
-            return 2.5+d.count/7;}else{
-              return lineThick;
-            }
-       })
+            if(OPTS.lineColNoneChecked_t_l){return lineThick;}
+            if(OPTS.lineColMoveChecked_t_l){return 2.5+d.count/8;}
+             })
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
        .on("click", function(d) { updateInfoBox(d.info);
@@ -170,19 +182,22 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                     
                             //      return "dot user" + d.user;
                                  })
-       .attr("r", dotDiam)
+       .attr("r", function(d){
+            if(OPTS.dotRadNoneChecked_t_d){return dotDiam;}
+            if(OPTS.dotRadAccChecked_t_d){return 37*Math.sqrt(d.acc-0.88);} //Sriram: dynamic radius (lowest acc value was around 0.88)}
+       })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
       .style("fill", function(d) {
 	               if (d.customColor) {
 		         return d.customColor;
-                       } else { if(OPTS.groupChecked){ //Sriram: this is done to group entire color the same
-                  return dClrsUsers[dUserGroup[d.user]];
-               }
-                         return dClrsUsers[d.user]; //{return d3.rgb("#777");}) 
-                       } })  
+                       } else { 
+          if(OPTS.dotColNoneChecked_s_d){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[d.user];} }
+          if(OPTS.dotColAccChecked_s_d){colVal = 255-Math.round(255*(d.acc-0.895)*8.5); return d3.rgb(colVal, colVal, colVal);}
+          if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}} 
+      })  
        .on("click", function(d) { updateInfoBox(d.info);
-                                  newDfInfo = d.info.slice(50,9999999) //Sriram: Adding this to ignore "Top key words"
+                                  newDfInfo = d.info.slice(24,9999999) //Sriram: Adding this to ignore "Top key words"
                                   updateSharedTokens(newDfInfo, 'dot'); 
                                   str = d.info; console.log(str);
                                   tempDFNo = str.slice(17,19);
@@ -192,7 +207,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                       //.style("fill", "transparent")       
                                       //.style("stroke", "red");  
                                       //.attr('r',100)
-                                      .style('fill',d3.rgb('blue')); //Sriram:changes the color to black upon click
+                                      .style('fill',d3.rgb('blue')); //Sriram:changes the color to blue upon click
                                     })
        .on("mouseover", function(d) {
                divTooltip.transition()

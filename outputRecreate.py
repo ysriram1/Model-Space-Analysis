@@ -19,7 +19,7 @@ def fillDFs(userData):
         featureString = '<b>Top 5 Features</b>: <br> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br> '
-        text = '<br><b>DF Number %i</b> <br> <b>5-NN Accuracy: %.2f </b> <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
+        text = '<br><b>DF Number %i </b> <br> <b>5-NN Accuracy: %.2f </b> <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
         knnAcc = userData['KNNAcc'][i+1]
         remainingTuples.append(((i+1)*5,points,text,knnAcc))
     return startTuple + remainingTuples
