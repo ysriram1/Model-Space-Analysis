@@ -1,4 +1,4 @@
-class,Alcohol,Malic_acid,Ash,Alcalinity_of_ash,Magnesium,Total_phenols,Flavanoids,Nonflavanoid_phenols,Proanthocyanins,Color_intensity,Hue,OD280/OD315_of_diluted_wines,Proline,noise1,noise2,noise3,noise4,noise5,noise6,noise7,noise8,noise9,noise10
+class,Alcohol,Malic_acid,Ash,Alcalinity_of_ash,Magnesium,Total_phenols,Flavanoids,Nonflavanoid_phenols,Proanthocyanins,Color_intensity,Hue,OD280/OD315_diluted_wines,Proline,noise1,noise2,noise3,noise4,noise5,noise6,noise7,noise8,noise9,noise10
 1,0.8421,0.1917,0.57219,0.25773,0.61957,0.62759,0.57384,0.28302,0.59306,0.37201,0.45529,0.9707,0.56134,0.81472,0.64775,0.17813,0.86114,0.70692,0.55574,0.41063,0.58243,0.73427,0.6944
 1,0.57105,0.20553,0.41711,0.030928,0.32609,0.57586,0.51055,0.24528,0.27445,0.2645,0.46342,0.78022,0.55064,0.90579,0.45092,0.12801,0.48485,0.99949,0.18443,0.98435,0.070684,0.43028,0.25678
 1,0.56053,0.32016,0.70054,0.41237,0.33696,0.62759,0.61181,0.32076,0.7571,0.37543,0.44715,0.69597,0.64693,0.12699,0.54701,0.99908,0.39346,0.28785,0.21203,0.94558,0.92274,0.69375,0.0097586

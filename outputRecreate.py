@@ -16,10 +16,10 @@ def fillDFs(userData):
     remainingTuples = []
     for i, points in enumerate(userData['layouts']):
         if userData['undoIndicator'][i] == 1: continue
-        featureString = '<u>Top 5 Features</u>: <br> '
+        featureString = '<b>Top 5 Features</b>: <br> '
         for featureName in userData['topFeatures'][i+1]: #first list is for initial point so we skip that
             featureString = featureString + featureName + '<br> '
-        text = 'DF Number: %i <br> 5-NN Accuracy: %.2f <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
+        text = '<br><b>DF Number %i</b> <br> <b>5-NN Accuracy: %.2f </b> <br><br> %s'%(i+2, userData['KNNAcc'][i+1], featureString)
         knnAcc = userData['KNNAcc'][i+1]
         remainingTuples.append(((i+1)*5,points,text,knnAcc))
     return startTuple + remainingTuples
@@ -32,7 +32,7 @@ def fillLines(userData):
         pointsMovedCount = 0
         pointsMovedCountText = ''
         j = i + 1 #the pointsList starts with key 1 not 0
-        pointsText = '<br><u>Points Moved</u>: <br> '        
+        pointsText = '<br><b>Points Moved</b> <br> '        
         print j - pushj
         if userData['undoIndicator'][i] == 1: pointAddText = 'None(user used UNDO)'; pushj += 1; print pushj
         else: 
@@ -46,14 +46,14 @@ def fillLines(userData):
             
             setVals = {}
             for index, pointSet in enumerate(allEntryLst):#This is done to ensure the sets are divided properly (each line with only have 6 items)
-                setVals[index] = '<u>Set%s</u> <br>'%(index+1)                
+                setVals[index] = '<u>Set%s</u>: <br>'%(index+1)                
                 #setVals[index] = '<u>Set%s</u> <br> <b>Number Moved:</b> %s <br>'%(index+1, len(allEntryLst[index]))
                 start=0; end = 0
-                for cut in range(len(pointSet)//6):
+                for cut in range(len(pointSet)//5):
                     start = end
-                    end = end + 6
+                    end = end + 5
                     setVals[index] += ', '.join(pointSet[start:end]) + '<br>'
-                if len(pointSet)%6 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%6]) + '<br>'
+                if len(pointSet)%5 != 0: setVals[index] += ', '.join(pointSet[end:end+len(pointSet)%5]) + '<br>'
             set1 = setVals[0]
             set2 = setVals[1]
             #set1 = '<u>Set 1</u>: ' + ','.join(allEntryLst[0]) + '<br \>'
@@ -62,7 +62,7 @@ def fillLines(userData):
             pointsMovedCountText ='(Total ' + str(pointsMovedCount) + ' points moved)<br>'#Counting the total number of points moved            
             pointAddText = set1 + set2
         totalPointsText = pointsText + pointsMovedCountText + pointAddText
-        text = "<u>Accuracy Change</u>: "
+        text = "<b>Accuracy Change:</b> "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
             y1 = userData['initLayoutPoint'][1]

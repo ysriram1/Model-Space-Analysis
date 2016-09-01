@@ -37,7 +37,7 @@ from sklearn.cross_validation import cross_val_score
 #os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
 os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
-sampleFile = pickle.load(open('no15812_newproj.pickle'))
+#sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
 ##############################################################################################################
 #####Functions to parse the user interaction log files, get the final vectors and perform MDS (or tsne) to get 2D proj
@@ -124,9 +124,11 @@ fullLst = []
 lstCounts = {}
 pointsMoved = {}
 undoIndicatorDict = {} #note that if position 'i' has the 'undo', then position 'i+1' in the indicator has the 1 value
+readOrder = []
 for log in logFileLst:
     name = log[1:2]
     if len(log) == 11: name = log[1:3]
+    readOrder.append(name)
     logSize, logLst, points, undos = logFileParse(log)
     fullLst = fullLst + logLst
     lstCounts[name] = logSize
@@ -137,7 +139,7 @@ for log in logFileLst:
 vectorMat = np.array(fullLst, dtype='float64')
 start = 0; end = 0 
 lstDict = {}
-for logID in ['10','11','1','2','4','5','6','7','8','9']:
+for logID in readOrder:#['10','11','1','2','4','5','6']:#,'7','8','9']:
     end = end + lstCounts[logID]
     print start, ' ', end
     lstDict[logID] = vectorMat[start:end]
@@ -167,7 +169,8 @@ for i in range(1,len(vectorMat)):
 
 start = 0; end = 0 
 TSNEresultDict = {}
-for logID in ['10','11','1','2','4','5','6','7','8','9']:
+for logID in readOrder:
+3#['10','11','1','2','4','5','6','7','8','9']:
     end = end + lstCounts[logID]
     TSNEresultDict[logID] = redVectorMat[start:end]
     start = end
@@ -184,12 +187,36 @@ for logID in lstDict.keys():
 topFeatureDict = {}
 for logID in lstDict.keys():
     topFeatureDict[logID] = getTopFeatures(lstDict[logID], featureLst, numberToPick=5)
-
+    
+    
+    
+    
+#######################################################
 ##Performing MDS on the entire data:
 vectorMat = np.array(fullLst, dtype='float64')
-redVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vectorMat)
+
+# deal with repeated vectors by creating a dictionary from vector to original row id
+from collections import defaultdict
+vecToOrigIdx = defaultdict(list)
+for i in range(len(vectorMat)):
+    vecToOrigIdx[tuple(vectorMat[i])].append(i)
+vecKeyList = list(vecToOrigIdx.keys())
+vecsForMDS = np.array([ list(x) for x in vecKeyList ])
+
+# add extra stuff to be part of the projection but ignored later
+vecsForMDSNoise = np.array([[np.random.normal(np.mean(x),np.std(x)) for x in vecsForMDS.T] for y in range(100)])
+vecsForMDSTotal = np.concatenate((vecsForMDS, vecsForMDSNoise), axis =0)
+
+# get the projected vectors for the unique subset of vectors
+subsetRedVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vecsForMDSTotal)
 #redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
 #redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
+
+# put the projected vectors back in place for visualization
+redVectorMat = np.zeros([len(vectorMat), 2])
+for iKey, vecKey in enumerate(vecKeyList): # iterate through list of tuple keys
+    for targetIdx in vecToOrigIdx[vecKey]: # for all rows where this projected point belongs
+        redVectorMat[targetIdx] = subsetRedVectorMat[iKey]
 
 #Making sure that redVec will have the same values when the actual vector has the same values:
 changes = 0
@@ -199,12 +226,10 @@ for i in range(1,len(vectorMat)):
             if np.sum(redVectorMat[j] == redVectorMat[i]) < len(redVectorMat[i]):
                 changes += 1
                 redVectorMat[j] = redVectorMat[i]
-        
-
 
 start = 0; end = 0 
 MDSresultDict = {}
-for logID in ['10','11','1','2','4','5','6','7','8','9']:
+for logID in readOrder:#,'7','8','9']:
     end = end + lstCounts[logID]
     MDSresultDict[logID] = redVectorMat[start:end]
     start = end
@@ -241,6 +266,9 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm 
 plt.style.use('ggplot')
 
+#colorPerUser = { 1:1,5:1,6:1,8:1,9:1,10:2,2:3,4:3,7:3,11:3} 
+#colorGroupToColor = { 1: 'b', 2: 'g', 3: 'r'}
+#colorGroupToColor[colorPerUser[int(logID)]] #use for groups
 colors=cm.rainbow(np.linspace(0,1,10))
 
 fig = plt.figure(figsize=(17,17))
@@ -248,18 +276,17 @@ ax = fig.add_subplot(111)
 
 for color, logID in zip(colors,MDSresultDict.keys()):
     name = 'User' + logID
-    if logID not in ['2','6','7','9']: continue
     MDSVals = MDSresultDict[logID]
     ax.scatter(MDSVals[:,0], MDSVals[:,1], color = 'b', s=40)
     ax.plot(MDSVals[:,0], MDSVals[:,1], '-', color = color, label = name, linewidth=4)
 
 
 ax.legend()
-plt.xlabel('TSNE Proj 1'); plt.ylabel('TSNE Proj 2')
-plt.title('TSNE Solution Vectors for Diffirent Users of Disfunction')
+plt.xlabel('MDS Proj 1'); plt.ylabel('MDS Proj 2')
+plt.title('MDS Solution Vectors for Diffirent Users of Disfunction')
 plt.legend(prop={'size':20}, bbox_to_anchor=(1,1))
 plt.tight_layout(pad=7)
-plt.savefig('./TSNEOutput.png')
+plt.savefig('./MDSOutput_diff_withnoise_2.png')
 
     
 
