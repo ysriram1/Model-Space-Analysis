@@ -220,19 +220,9 @@
             <!--  <input type="checkbox" name="showLines" value="lines" checked="checked" id="showLines"> Show Lines<br>
               <input type="checkbox" name="showDots" value="dots" checked="checked" id="showDots"> Show Dots<br>
               <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup"> Color by Group<br> -->
-			<input type="checkbox" name="showLines" value="lines" checked="checked" id="showLines" onclick="refreshVis()">Lines<br>
-              Shade By:
-              <select style='margin-top:2px; margin-bottom: 3px'id="shadeOpts_L" onchange="refreshVis()">
-                <option value="none_s_l">None</option>
-                <option value="moveCount_s_l">Move Count</option>
-              </select>
-              <br>
-              Width By:  
-              <select style='margin-top:2px; margin-bottom: 3px' id="widthOpts_L" onchange="refreshVis()">
-                <option value="none_t_l">None</option>
-                <option value="moveCount_t_l">Move Count</option>
-              </select>
-				<br>
+			
+      <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup" onclick="refreshVis()">Color By Group<br>
+
              <input type="checkbox" name="showDots" value="dots" checked="checked" id="showDots" onclick="refreshVis()">Dots<br>
 				Shade By:
               <select style='margin-top:2px; margin-bottom: 3px'id="shadeOpts_D" onchange="refreshVis()">
@@ -246,7 +236,19 @@
                 <option value="accuracy_t_d">Accuracy</option>
               </select>	
 				<br>
-             <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup" onclick="refreshVis()"> Color By Group<br>
+              <input type="checkbox" name="showLines" value="lines" checked="checked" id="showLines" onclick="refreshVis()">Lines<br>
+              Shade By:
+              <select style='margin-top:2px; margin-bottom: 3px'id="shadeOpts_L" onchange="refreshVis()">
+                <option value="none_s_l">None</option>
+                <option value="moveCount_s_l">Move Count</option>
+              </select>
+              <br>
+              Width By:  
+              <select style='margin-top:2px; margin-bottom: 3px' id="widthOpts_L" onchange="refreshVis()">
+                <option value="none_t_l">None</option>
+                <option value="moveCount_t_l">Move Count</option>
+              </select>
+        <br>
              <!-- <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup"> Color by Group<br>
               <input type="checkbox" name="lineColor" value="colorByCount" id="colorByCount"> Color by Read Count<br>
               <input type="checkbox" name="lineWidth" value="widthByCount" id="widthByCount"> Width by Read Count<br> 

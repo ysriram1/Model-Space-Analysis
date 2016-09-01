@@ -67,7 +67,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     }
 
     if(OPTS.groupChecked){//Sriram: if group is checked color selection process:
-    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:2,2:3,4:3,7:3,11:3}
+    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9}
 
     var fClrsUsers = d3.scale.category10();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
