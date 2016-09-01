@@ -184,7 +184,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                  })
        .attr("r", function(d){
             if(OPTS.dotRadNoneChecked_t_d){return dotDiam;}
-            if(OPTS.dotRadAccChecked_t_d){return 37*Math.sqrt(d.acc-0.88);} //Sriram: dynamic radius (lowest acc value was around 0.88)}
+            if(OPTS.dotRadAccChecked_t_d){return 31.5*Math.sqrt(d.acc-0.88);} //Sriram: dynamic radius (lowest acc value was around 0.88)}
        })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
