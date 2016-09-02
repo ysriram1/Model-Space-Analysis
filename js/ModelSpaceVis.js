@@ -117,6 +117,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     // remove old dots and lines
     svg.selectAll(".dot").remove();
     svg.selectAll(".line").remove();
+    svg.selectAll(".cross").remove();
 
     // filter data by users checked off
     dotdata = dotdata.filter( function(x){return userChecked(x.user);});
@@ -228,11 +229,39 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 
     if(!OPTS.dotChecked){svg.selectAll(".dot").remove();}//Sriram: added this to remove dots when dotChecked is not checked.
 
+   // add a cross at the starting point
+    // **** don't do this if no dotdata
+    //   create a transform function for the origin (for zoom)
+    var fOriginTransform = function() { 
+       return "translate(" + fGetScaledX(dotdata[0]) + "," + fGetScaledY(dotdata[0]) + ")";
+    };
+    var cross1 = svg.append("line") // upper left to lower right
+       .attr("class","cross")
+       .attr("x1", -5)
+       .attr("y1", -5)
+       .attr("x2", 5)
+       .attr("y2", 5)
+       .style("stroke", d3.rgb(0,0,0))
+       .style("stroke-width", 4)
+       .attr("transform", fOriginTransform);
+    var cross2 = svg.append("line") // upper left to lower right
+       .attr("class","cross")
+       .attr("x1", 5)
+       .attr("y1", -5)
+       .attr("x2", -5)
+       .attr("y2", 5)
+       .style("stroke", d3.rgb(0,0,0))
+       .style("stroke-width", 4)   
+       .attr("transform", fOriginTransform);
+    
+
     fZoom(lines); // initial positioning calculation
   
     function fZoom() {
         dots.attr("transform", fTransform);
         //lines.attr("transform", fTransformLine);
+        cross1.attr("transform", fOriginTransform);
+        cross2.attr("transform", fOriginTransform);
         svg.selectAll(".line")
            .attr("d",  function(d){return lineFunction(fTwoSegments(d));});
     }

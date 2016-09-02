@@ -204,6 +204,7 @@ vecKeyList = list(vecToOrigIdx.keys())
 vecsForMDS = np.array([ list(x) for x in vecKeyList ])
 
 # add extra stuff to be part of the projection but ignored later
+np.random.seed(99)
 vecsForMDSNoise = np.array([[np.random.normal(np.mean(x),np.std(x)) for x in vecsForMDS.T] for y in range(100)])
 vecsForMDSTotal = np.concatenate((vecsForMDS, vecsForMDSNoise), axis =0)
 
