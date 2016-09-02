@@ -61,16 +61,36 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         getY = function(d) {return d.y;},
         dotXs = dotdata.map(getX),
         dotYs = dotdata.map(getY);
+    
+    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9}
+
     if(!OPTS.groupChecked){
     var fClrsUsers = d3.scale.category20();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
+
+    for (var key in dUserGroup){
+      var userNumber = ".u"+key;
+      //var childText = "<div style='background:'"
+      var selectNode = d3.selectAll(".opt").filter(userNumber)
+                .style("border-radius","10px")
+                .style("background",dClrsUsers[key]);
+
+    }
     }
 
     if(OPTS.groupChecked){//Sriram: if group is checked color selection process:
-    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9}
-
+    
     var fClrsUsers = d3.scale.category10();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
+     for (var key in dUserGroup){
+      var userNumber = ".u"+key;
+      //var childText = "<div style='background:'"
+      var selectNode = d3.selectAll(".opt").filter(userNumber)
+                .style("border-radius","10px")
+                .style("background",dClrsUsers[dUserGroup[key]]);
+
+    }
+
     }
 
     var xOffset = 10, yOffset = 10,
