@@ -62,7 +62,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         dotXs = dotdata.map(getX),
         dotYs = dotdata.map(getY);
     
-    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9}
+    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9};
+    dUserGroupAltColors = {1:1, 5:2, 6:3, 8:4, 9:5, 10:6, 2:7, 4:8, 7:9, 11:10};
 
     if(!OPTS.groupChecked){
     var fClrsUsers = d3.scale.category20();
@@ -72,21 +73,21 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       var userNumber = ".u"+key;
       //var childText = "<div style='background:'"
       var selectNode = d3.selectAll(".opt").filter(userNumber)
-                .style("border-radius","10px")
-                .style("background",dClrsUsers[key]);
+                .style("border-radius","2px")
+                .style("background",dClrsUsers[dUserGroupAltColors[key]]);
 
     }
     }
 
     if(OPTS.groupChecked){//Sriram: if group is checked color selection process:
     
-    var fClrsUsers = d3.scale.category10();
+    var fClrsUsers = d3.scale.category20b();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
      for (var key in dUserGroup){
       var userNumber = ".u"+key;
       //var childText = "<div style='background:'"
       var selectNode = d3.selectAll(".opt").filter(userNumber)
-                .style("border-radius","10px")
+                .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroup[key]]);
 
     }
@@ -133,7 +134,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       .attr("height", H)
       .attr("fill", "transparent")
 
-
     // remove old dots and lines
     svg.selectAll(".dot").remove();
     svg.selectAll(".line").remove();
@@ -163,7 +163,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 	       if (d.customColor) {
 		 return d.customColor;
                } else 
-          { if(OPTS.lineColNoneChecked_s_l){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[d.user];}}
+          { if(OPTS.lineColNoneChecked_s_l){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[dUserGroupAltColors[d.user]];}}
             if(OPTS.lineColMoveChecked_s_l){colVal = Math.round(255/90 * (80-d.count));return d3.rgb(colVal,colVal,colVal); }
             if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}
           } })
@@ -182,7 +182,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
               divTooltip.html(d.info + "<br/>")
                      .style("left", (d3.event.pageX + 5) + "px")
                      .style("top", (d3.event.pageY - 28) + "px");
-              divTooltip.style("background-color", dClrsUsers[d.user]);
+              divTooltip.style("background-color", dClrsUsers[dUserGroupAltColors[d.user]]);
 	   })
        .on("mouseout", function(d) {
               divTooltip.transition()
@@ -213,7 +213,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 	               if (d.customColor) {
 		         return d.customColor;
                        } else { 
-          if(OPTS.dotColNoneChecked_s_d){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[d.user];} }
+          if(OPTS.dotColNoneChecked_s_d){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[dUserGroupAltColors[d.user]];} }
           if(OPTS.dotColAccChecked_s_d){colVal = 255-Math.round(255*(d.acc-0.895)*8.5); return d3.rgb(colVal, colVal, colVal);}
           if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}} 
       })  
@@ -238,7 +238,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
  			      d.info)
                       .style("left", (d3.event.pageX + 5) + "px")
                       .style("top", (d3.event.pageY - 28) + "px");
-               divTooltip.style("background-color", dClrsUsers[d.user]);
+               divTooltip.style("background-color", dClrsUsers[dUserGroupAltColors[d.user]]);
            })
        .on("mouseout", function(d) {
                divTooltip.transition()
@@ -273,7 +273,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .style("stroke", d3.rgb(0,0,0))
        .style("stroke-width", 4)   
        .attr("transform", fOriginTransform);
-    
+        
+    // show a legend for line and dot width and grayscale values
+    addLegend(svg, OPTS, W, H);
 
     fZoom(lines); // initial positioning calculation
   
@@ -291,4 +293,47 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       return "translate(" + fGetScaledX(d) + "," + fGetScaledY(d) + ")";
     }
 
+    // add a legend describing the values associated with different line/dot
+    // sizes and (grayscale) colors
+    function addLegend(svg, OPTS, W, H) {
+      var boxColor = d3.rgb(255, 255, 255);
+      var borderColor = d3.rgb(0, 0, 0);
+      var legendBlockWidth = 80;
+      var edgeBuffer = 20;
+      var currentRectLeftX = W - edgeBuffer - legendBlockWidth;
+
+      // for lines (shade then thickness)
+      if (OPTS.lineColMoveChecked_s_l) {
+        drawbox();
+        currentRectLeftX -= legendBlockWidth + 10;
+      }
+      if (OPTS.lineColMoveChecked_t_l) {
+        drawbox();
+        currentRectLeftX -= legendBlockWidth + 10;
+      }
+
+      // for dots (shade then size)
+      if (OPTS.dotColAccChecked_s_d) {
+        drawbox();
+        currentRectLeftX -= legendBlockWidth + 10;
+      }
+      if (OPTS.dotRadAccChecked_t_d) {
+        drawbox();
+        currentRectLeftX -= legendBlockWidth + 10;
+      }
+
+
+      function drawbox() {
+        svg.append("rect")
+           .attr("x", currentRectLeftX)
+           .attr("y", H - legendBlockWidth - edgeBuffer)
+           .attr("width", legendBlockWidth)
+           .attr("height", legendBlockWidth)
+           .attr("fill", boxColor)
+           .attr("stroke", borderColor);
+      }
+
+    }
 }
+
+
