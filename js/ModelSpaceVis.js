@@ -160,17 +160,23 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("class", function(d){return "line user" + d.user;})
       //.attr("d", function(d){return lineFunction(fTwoSegments(d));})
        .attr("stroke", function(d) {
-	       if (d.customColor) {
-		 return d.customColor;
-               } else 
-          { if(OPTS.lineColNoneChecked_s_l){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[dUserGroupAltColors[d.user]];}}
-            if(OPTS.lineColMoveChecked_s_l){colVal = Math.round(255/90 * (80-d.count));return d3.rgb(colVal,colVal,colVal); }
-            if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}
-          } })
-       .attr("stroke-width", function(d){ //Sriram:Added this to accomadate varying line width based on read count
+	   if (d.customColor) { return d.customColor; }
+           else {
+	       if (OPTS.lineColNoneChecked_s_l) {
+		   if (OPTS.groupChecked) { return dClrsUsers[dUserGroup[d.user]]; }
+		   else { return dClrsUsers[dUserGroupAltColors[d.user]]; }
+	       }
+               if (OPTS.lineColMoveChecked_s_l) {
+		   colVal = Math.round(255/90 * (80-d.count));
+		   return d3.rgb(colVal,colVal,colVal);
+	       }
+               if (OPTS.groupChecked) { return dClrsUsers[dUserGroup[d.user]]; }
+           } })
+        //Sriram:Added this to accomadate varying line width based on read count
+	.attr("stroke-width", function(d){
             if(OPTS.lineColNoneChecked_t_l){return lineThick;}
             if(OPTS.lineColMoveChecked_t_l){return 2.5+d.count/8;}
-             })
+        })
        .attr("marker-mid", "url(#inlineMarker)")
        .style("fill", "transparent")
        .on("click", function(d) { updateInfoBox(d.info);
@@ -197,26 +203,32 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     var dots = svg.selectAll(".dot")
        .data(dotdata)
        .enter().append("circle")
-       .attr("class", function(d){str = d.info;
-                                    DFNo = str.slice(17,19);
-                                    return "dot user" + d.user +" DF"+ DFNo;
-                                    
-                            //      return "dot user" + d.user;
+       .attr("class", function(d){ str = d.info;
+                                   DFNo = str.slice(17,19);
+                                   return "dot user" + d.user +" DF"+ DFNo;
+                                   // return "dot user" + d.user;
                                  })
        .attr("r", function(d){
-            if(OPTS.dotRadNoneChecked_t_d){return dotDiam;}
-            if(OPTS.dotRadAccChecked_t_d){return 31.5*Math.sqrt(d.acc-0.88);} //Sriram: dynamic radius (lowest acc value was around 0.88)}
+           if (OPTS.dotRadNoneChecked_t_d) { return dotDiam; }
+           //Sriram: dynamic radius (lowest acc value was around 0.88)}
+           if (OPTS.dotRadAccChecked_t_d) { return 31.5*Math.sqrt(d.acc-0.88);}
        })
       // .attr("cx", fGetScaledX)
       // .attr("cy", fGetScaledY)
       .style("fill", function(d) {
-	               if (d.customColor) {
+                   if (d.customColor) {
 		         return d.customColor;
-                       } else { 
-          if(OPTS.dotColNoneChecked_s_d){if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}else{return dClrsUsers[dUserGroupAltColors[d.user]];} }
-          if(OPTS.dotColAccChecked_s_d){colVal = 255-Math.round(255*(d.acc-0.895)*8.5); return d3.rgb(colVal, colVal, colVal);}
-          if(OPTS.groupChecked){return dClrsUsers[dUserGroup[d.user]];}} 
-      })  
+                   } else { 
+                       if(OPTS.dotColNoneChecked_s_d) {
+                           if(OPTS.groupChecked) { return dClrsUsers[dUserGroup[d.user]]; }
+                           else { return dClrsUsers[dUserGroupAltColors[d.user]]; }
+                       }
+		       if (OPTS.dotColAccChecked_s_d) {
+                           colVal = 255-Math.round(255*(d.acc-0.895)*8.5);
+                           return d3.rgb(colVal, colVal, colVal);
+                       }
+		       if(OPTS.groupChecked){ return dClrsUsers[dUserGroup[d.user]]; }
+                   } })  
        .on("click", function(d) { updateInfoBox(d.info);
                                   newDfInfo = d.info.slice(24,9999999) //Sriram: Adding this to ignore "Top key words"
                                   updateSharedTokens(newDfInfo, 'dot'); 
@@ -298,39 +310,75 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     function addLegend(svg, OPTS, W, H) {
       var boxColor = d3.rgb(255, 255, 255);
       var borderColor = d3.rgb(0, 0, 0);
-      var legendBlockWidth = 80;
+      var singleLegendWidth = 80;
+      var singleLegendHeight = 90;  
       var edgeBuffer = 20;
-      var currentRectLeftX = W - edgeBuffer - legendBlockWidth;
+      var currentRectLeftX = W - edgeBuffer - singleLegendWidth;
 
       // for lines (shade then thickness)
       if (OPTS.lineColMoveChecked_s_l) {
-        drawbox();
-        currentRectLeftX -= legendBlockWidth + 10;
+          legendBox = drawbox();
+         
+          // formula for intensity: 255/90 * (80-d.count)
+          // range is [2, 78] -> [221, 3]
+          drawShadedSizedLine(legendBox, 221, 12, true);
+
+          currentRectLeftX -= singleLegendWidth + 10;
       }
       if (OPTS.lineColMoveChecked_t_l) {
-        drawbox();
-        currentRectLeftX -= legendBlockWidth + 10;
+          drawbox();
+          currentRectLeftX -= singleLegendWidth + 10;
+
+          //if(OPTS.lineColMoveChecked_t_l){ return 2.5+d.count/8; }
       }
 
       // for dots (shade then size)
       if (OPTS.dotColAccChecked_s_d) {
-        drawbox();
-        currentRectLeftX -= legendBlockWidth + 10;
+          drawbox();
+          currentRectLeftX -= singleLegendWidth + 10;
+          
+          //colVal = 255-Math.round(255*(d.acc-0.895)*8.5);
+          //return d3.rgb(colVal, colVal, colVal);
       }
       if (OPTS.dotRadAccChecked_t_d) {
-        drawbox();
-        currentRectLeftX -= legendBlockWidth + 10;
+          drawbox();
+          currentRectLeftX -= singleLegendWidth + 10;
+
+          //return 31.5*Math.sqrt(d.acc-0.88);
+      }
+        
+        function drawShadedSizedLine(drawBox, lineIntensity, lineThick, isTopLine) {
+            var edgeOffset = 4;
+            var midMargin = 4;
+            var topMargin = 12;
+            var lineWidth = (singleLegendWidth - 2*edgeOffset) - edgeOffset - midMargin;
+            var lineX = edgeOffset;
+            var lineY = (singleLegendHeight - 2*edgeOffset)/2 - lineThick/2 + topMargin;
+            
+            drawBox.append("rect")
+                .attr("x", lineX)
+                .attr("y", lineY)
+                .attr("width", lineWidth)
+                .attr("height", lineThick)
+                .attr("fill", d3.rgb(lineIntensity, lineIntensity, lineIntensity));
       }
 
+        function drawbox() {
+            var transstr = "translate("+ currentRectLeftX +","+
+                                      (H - singleLegendWidth - edgeBuffer)+")";
+          var newBox = svg.append("g")
+              .attr("transform", transstr)
 
-      function drawbox() {
-        svg.append("rect")
-           .attr("x", currentRectLeftX)
-           .attr("y", H - legendBlockWidth - edgeBuffer)
-           .attr("width", legendBlockWidth)
-           .attr("height", legendBlockWidth)
-           .attr("fill", boxColor)
-           .attr("stroke", borderColor);
+          newBox.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", singleLegendWidth)
+              .attr("height", singleLegendHeight)
+              .attr("fill", boxColor)
+              .attr("stroke", borderColor);
+
+          return newBox;
+         
       }
 
     }
