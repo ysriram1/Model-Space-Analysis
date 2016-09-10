@@ -196,7 +196,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .style("opacity", 0);
            })
 
-    if(!OPTS.lineChecked){svg.selectAll(".line").remove();} //Sriram: added this to remove lines with lineChecked is not checked.
+    //Sriram: added this to remove lines with lineChecked is not checked.0
+    if(!OPTS.lineChecked){svg.selectAll(".line").remove();}
 
 
     // draw dots
@@ -311,49 +312,83 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       var boxColor = d3.rgb(255, 255, 255);
       var borderColor = d3.rgb(0, 0, 0);
       var singleLegendWidth = 80;
-      var singleLegendHeight = 90;  
+      var singleLegendHeight = 100;  
       var edgeBuffer = 20;
       var currentRectLeftX = W - edgeBuffer - singleLegendWidth;
+      var edgeOffset = 6;
+      var midMargin = 4;
+      var topMargin = 30;
+      var halfHeight = (singleLegendHeight - topMargin)/ 2;
+      var halfWidth = (singleLegendWidth - 2*edgeOffset)/2;
+      var lineWidth = singleLegendWidth/2 - 2*edgeOffset - midMargin;
+      
+      // remove old legends
+      svg.selectAll(".legend-box").remove();
 
-      // for lines (shade then thickness)
+      // for lines (shading)
       if (OPTS.lineColMoveChecked_s_l) {
           legendBox = drawbox();
          
           // formula for intensity: 255/90 * (80-d.count)
           // range is [2, 78] -> [221, 3]
+          addLegendBoxTitle(legendBox, "Move Count");
           drawShadedSizedLine(legendBox, 221, 12, true);
+          addLegendValue(legendBox, 2, true);
+          drawShadedSizedLine(legendBox, 3, 12, false);
+          addLegendValue(legendBox, 78, false);
 
           currentRectLeftX -= singleLegendWidth + 10;
       }
+      // for lines (thickness)
       if (OPTS.lineColMoveChecked_t_l) {
-          drawbox();
-          currentRectLeftX -= singleLegendWidth + 10;
+          legendBox = drawbox();
 
-          //if(OPTS.lineColMoveChecked_t_l){ return 2.5+d.count/8; }
+          // formula for thickness: 2.5+d.count/8
+          // range is [2, 78] -> [2.75, 12.25]
+          addLegendBoxTitle(legendBox, "Move Count");
+          drawShadedSizedLine(legendBox, 130, 2.75, true);
+          addLegendValue(legendBox, "2", true);
+          drawShadedSizedLine(legendBox, 130, 12.25, false);
+          addLegendValue(legendBox, "78", false);
+
+          currentRectLeftX -= singleLegendWidth + 10;
       }
 
-      // for dots (shade then size)
+      // for dots (shade)
       if (OPTS.dotColAccChecked_s_d) {
-          drawbox();
-          currentRectLeftX -= singleLegendWidth + 10;
-          
-          //colVal = 255-Math.round(255*(d.acc-0.895)*8.5);
-          //return d3.rgb(colVal, colVal, colVal);
-      }
-      if (OPTS.dotRadAccChecked_t_d) {
-          drawbox();
-          currentRectLeftX -= singleLegendWidth + 10;
+          legendBox = drawbox();
 
-          //return 31.5*Math.sqrt(d.acc-0.88);
+          // formula for intensity: 255-Math.round(255*(d.acc-0.895)*8.5)
+          function dotIntensity(x) { return 255-Math.round(255*(x-0.895)*8.5); }
+          // ? range is [0.85, 1.0] ?
+          addLegendBoxTitle(legendBox, "Accuracy");
+          drawShadedSizedDot(legendBox, dotIntensity(0.85), 6, true);
+          addLegendValue(legendBox, "0.85", true);
+          drawShadedSizedDot(legendBox, dotIntensity(1.0), 6, false);
+          addLegendValue(legendBox, "1.0", false);
+
+          currentRectLeftX -= singleLegendWidth + 10;
+      }
+      // for dots (size)
+      if (OPTS.dotRadAccChecked_t_d) {
+          legendBox = drawbox();
+
+          // formula for dot size: 31.5*Math.sqrt(d.acc-0.88)
+          function dotSize(x) { return 31.5*Math.sqrt(x-0.88); }
+          // ? range is [0.85, 1.0] ?
+          addLegendBoxTitle(legendBox, "Accuracy");
+          drawShadedSizedDot(legendBox, 130, dotSize(0.89), true);
+          addLegendValue(legendBox, "0.89", true);
+          drawShadedSizedDot(legendBox, 130, dotSize(1.0), false);
+          addLegendValue(legendBox, "1.0", false);
+
+          currentRectLeftX -= singleLegendWidth + 10;
       }
         
         function drawShadedSizedLine(drawBox, lineIntensity, lineThick, isTopLine) {
-            var edgeOffset = 4;
-            var midMargin = 4;
-            var topMargin = 12;
-            var lineWidth = (singleLegendWidth - 2*edgeOffset) - edgeOffset - midMargin;
             var lineX = edgeOffset;
-            var lineY = (singleLegendHeight - 2*edgeOffset)/2 - lineThick/2 + topMargin;
+            var lineY = topMargin + halfHeight/2 - lineThick/2;
+            if (!isTopLine) { lineY += halfHeight; }
             
             drawBox.append("rect")
                 .attr("x", lineX)
@@ -361,26 +396,77 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                 .attr("width", lineWidth)
                 .attr("height", lineThick)
                 .attr("fill", d3.rgb(lineIntensity, lineIntensity, lineIntensity));
-      }
+        }
+
+        function drawShadedSizedDot(drawBox, dotIntensity, radius, isTopDot) {
+            var dotX = edgeOffset + lineWidth/2;
+            var dotY = topMargin + halfHeight/2 - radius/2;
+            if (!isTopDot) { dotY += halfHeight; }
+            
+            if (dotIntensity > 250) { // draw a halo if dot will be too light
+              drawBox.append("circle")
+                .attr("cx", dotX)
+                .attr("cy", dotY)
+                .attr("r", radius + 1)
+                .attr("fill", d3.rgb(50, 50, 50));
+            }
+
+            drawBox.append("circle")
+                .attr("cx", dotX)
+                .attr("cy", dotY)
+                .attr("r", radius)
+                .attr("fill", d3.rgb(dotIntensity, dotIntensity, dotIntensity));
+        }
+
+        function addLegendValue(drawBox, txtValue, isTopLine) {
+            var lineX = edgeOffset + 2*midMargin + halfWidth;
+            var lineY = topMargin + halfHeight/2 - lineThick/2;
+            if (!isTopLine) { lineY += halfHeight; }
+
+            drawBox.append("text")
+                   .attr("x", lineX)
+                   .attr("y", lineY)
+                   .attr("text-anchor", "middle")
+                   .attr("dominant-baseline", "central")
+                   //.attr("dy", ".5em")
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "11px")
+                   .attr("fill", "black")
+                   .text(txtValue)
+        }
+
+        function addLegendBoxTitle(drawBox, title) {
+            var lineX = edgeOffset + halfWidth;
+            var lineY = topMargin/2;
+            drawBox.append("text")
+                   .attr("x", lineX)
+                   .attr("y", lineY)
+                   .attr("text-anchor", "middle")
+                   .attr("dominant-baseline", "central")
+                   //.attr("dy", ".5em")
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "13px")
+                   .attr("fill", "black")
+                   .text(title)
+        }
 
         function drawbox() {
             var transstr = "translate("+ currentRectLeftX +","+
                                       (H - singleLegendWidth - edgeBuffer)+")";
-          var newBox = svg.append("g")
+            var newBox = svg.append("g")
+              .attr("class", "legend-box")
               .attr("transform", transstr)
 
-          newBox.append("rect")
+            newBox.append("rect")
               .attr("x", 0)
               .attr("y", 0)
               .attr("width", singleLegendWidth)
               .attr("height", singleLegendHeight)
               .attr("fill", boxColor)
-              .attr("stroke", borderColor);
+              .attr("stroke", borderColor)
 
-          return newBox;
-         
+            return newBox;
       }
-
     }
 }
 
