@@ -225,7 +225,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                            else { return dClrsUsers[dUserGroupAltColors[d.user]]; }
                        }
 		       if (OPTS.dotColAccChecked_s_d) {
-                           colVal = 255-Math.round(255*(d.acc-0.895)*8.5);
+                           colVal = 255-Math.round(255*(d.acc-0.88)*8.5);
                            return d3.rgb(colVal, colVal, colVal);
                        }
 		       if(OPTS.groupChecked){ return dClrsUsers[dUserGroup[d.user]]; }
@@ -311,7 +311,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     function addLegend(svg, OPTS, W, H) {
       var boxColor = d3.rgb(255, 255, 255);
       var borderColor = d3.rgb(0, 0, 0);
-      var singleLegendWidth = 80;
+      var singleLegendWidth = 120;
       var singleLegendHeight = 100;  
       var edgeBuffer = 20;
       var currentRectLeftX = W - edgeBuffer - singleLegendWidth;
@@ -331,7 +331,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
          
           // formula for intensity: 255/90 * (80-d.count)
           // range is [2, 78] -> [221, 3]
-          addLegendBoxTitle(legendBox, "Move Count");
+          addLegendBoxTitle(legendBox, "Move Count-Shade");
           drawShadedSizedLine(legendBox, 221, 12, true);
           addLegendValue(legendBox, 2, true);
           drawShadedSizedLine(legendBox, 3, 12, false);
@@ -345,7 +345,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 
           // formula for thickness: 2.5+d.count/8
           // range is [2, 78] -> [2.75, 12.25]
-          addLegendBoxTitle(legendBox, "Move Count");
+          addLegendBoxTitle(legendBox, "Move Count-Width");
           drawShadedSizedLine(legendBox, 130, 2.75, true);
           addLegendValue(legendBox, "2", true);
           drawShadedSizedLine(legendBox, 130, 12.25, false);
@@ -359,13 +359,13 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
           legendBox = drawbox();
 
           // formula for intensity: 255-Math.round(255*(d.acc-0.895)*8.5)
-          function dotIntensity(x) { return 255-Math.round(255*(x-0.895)*8.5); }
+          function dotIntensity(x) { return 255-Math.round(255*(x-0.88)*8.5); }
           // ? range is [0.85, 1.0] ?
-          addLegendBoxTitle(legendBox, "Accuracy");
-          drawShadedSizedDot(legendBox, dotIntensity(0.85), 6, true);
-          addLegendValue(legendBox, "0.85", true);
-          drawShadedSizedDot(legendBox, dotIntensity(1.0), 6, false);
-          addLegendValue(legendBox, "1.0", false);
+          addLegendBoxTitle(legendBox, "Accuracy-Shade");
+          drawShadedSizedDot(legendBox, dotIntensity(0.90), 6, true);
+          addLegendValue(legendBox, "0.90", true);
+          drawShadedSizedDot(legendBox, dotIntensity(0.975), 6, false);
+          addLegendValue(legendBox, "0.98", false);
 
           currentRectLeftX -= singleLegendWidth + 10;
       }
@@ -376,11 +376,11 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
           // formula for dot size: 31.5*Math.sqrt(d.acc-0.88)
           function dotSize(x) { return 31.5*Math.sqrt(x-0.88); }
           // ? range is [0.85, 1.0] ?
-          addLegendBoxTitle(legendBox, "Accuracy");
-          drawShadedSizedDot(legendBox, 130, dotSize(0.89), true);
-          addLegendValue(legendBox, "0.89", true);
-          drawShadedSizedDot(legendBox, 130, dotSize(1.0), false);
-          addLegendValue(legendBox, "1.0", false);
+          addLegendBoxTitle(legendBox, "Accuracy-Size");
+          drawShadedSizedDot(legendBox, 130, dotSize(0.90), true);
+          addLegendValue(legendBox, "0.90", true);
+          drawShadedSizedDot(legendBox, 130, dotSize(0.975), false);
+          addLegendValue(legendBox, "0.98", false);
 
           currentRectLeftX -= singleLegendWidth + 10;
       }
@@ -430,7 +430,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .attr("dominant-baseline", "central")
                    //.attr("dy", ".5em")
                    .attr("font-family", "sans-serif")
-                   .attr("font-size", "11px")
+                   .attr("font-size", "13px")
                    .attr("fill", "black")
                    .text(txtValue)
         }
@@ -445,6 +445,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .attr("dominant-baseline", "central")
                    //.attr("dy", ".5em")
                    .attr("font-family", "sans-serif")
+                   .style('font-weight', 'bold')
                    .attr("font-size", "13px")
                    .attr("fill", "black")
                    .text(title)
