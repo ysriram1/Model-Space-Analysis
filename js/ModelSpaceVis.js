@@ -23,6 +23,10 @@ function refreshVis() {
     var dotChecked = document.getElementById('showDots').checked;
     var groupChecked = document.getElementById('colorByGroup').checked;
 
+    //Sriram: added this to show and remove legend
+    //var legendChecked = document.getElementById('legendOpt').value;
+    var legendChecked = document.getElementById('legendShowYes').checked;
+
     OPTS.lineChecked = lineChecked;
     OPTS.dotChecked = dotChecked;
     OPTS.groupChecked = groupChecked;
@@ -38,6 +42,11 @@ function refreshVis() {
 
     OPTS.dotRadNoneChecked_t_d = widthStateD == "none_t_d";
     OPTS.dotRadAccChecked_t_d = widthStateD == "accuracy_t_d";
+
+
+    OPTS.showLegendYes = legendChecked;
+    //OPTS.showLegendYes = legendChecked == 'yes';
+    //OPTS.showLegendNo = legendChecked == 'no';
 
     drawVis(userdata, "#VIS", 800, 800, OPTS);
   }
@@ -288,7 +297,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("transform", fOriginTransform);
         
     // show a legend for line and dot width and grayscale values
-    addLegend(svg, OPTS, W, H);
+    if(OPTS.showLegendYes){addLegend(svg, OPTS, W, H);}
+    if(!OPTS.showLegendYes){svg.selectAll(".legend-box").remove();}
 
     fZoom(lines); // initial positioning calculation
   

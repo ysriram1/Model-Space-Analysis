@@ -240,6 +240,7 @@
               Shade By:
               <select style='margin-top:2px; margin-bottom: 3px'id="shadeOpts_L" onchange="refreshVis()">
                 <option value="none_s_l">None</option>
+
                 <option value="moveCount_s_l">Move Count</option>
               </select>
               <br>
@@ -249,6 +250,11 @@
                 <option value="moveCount_t_l">Move Count</option>
               </select>
         <br>
+        <br>
+        <div id="legendOpt">
+        Legend: <input type="radio" name = "legendShow" id="legendShowYes" value="yes" checked="checked" onchange="refreshVis()"> Yes 
+        <input type="radio" name = "legendShow" id="legendShowNo" value='no' onchange="refreshVis()"> No 
+        </div>
              <!-- <input type="checkbox" name="colorByGroup" value="byGroup" id="colorByGroup"> Color by Group<br>
               <input type="checkbox" name="lineColor" value="colorByCount" id="colorByCount"> Color by Read Count<br>
               <input type="checkbox" name="lineWidth" value="widthByCount" id="widthByCount"> Width by Read Count<br> 
