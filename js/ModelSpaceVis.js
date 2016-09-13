@@ -124,7 +124,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                       .attr("class", "tooltip")
                                       .style("opacity", 0)
                                       .style("position", "absolute")
-                                      .style("width", "200px")
+                                      .style("width", "220px")
                                       .style("background-color", "#ee0")
                                       .style("pointer-events", "none")
                                       .style("padding","8px") //Sriram: Added this to include some padding on the boxes
@@ -338,28 +338,28 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
       // for lines (shading)
       if (OPTS.lineColMoveChecked_s_l) {
           legendBox = drawbox();
-         
+          function lineShadeVal(x){return Math.round(255/90 * (80-x));}
           // formula for intensity: 255/90 * (80-d.count)
           // range is [2, 78] -> [221, 3]
           addLegendBoxTitle(legendBox, "Move Count-Shade");
-          drawShadedSizedLine(legendBox, 221, 12, true);
+          drawShadedSizedLine(legendBox, lineShadeVal(2), 12, true);
           addLegendValue(legendBox, 2, true);
-          drawShadedSizedLine(legendBox, 3, 12, false);
-          addLegendValue(legendBox, 78, false);
+          drawShadedSizedLine(legendBox, lineShadeVal(73), 12, false);
+          addLegendValue(legendBox, 73, false);
 
           currentRectLeftX -= singleLegendWidth + 10;
       }
       // for lines (thickness)
       if (OPTS.lineColMoveChecked_t_l) {
           legendBox = drawbox();
-
+          function lineThickVal(x){return 2.5+x/8;} 
           // formula for thickness: 2.5+d.count/8
           // range is [2, 78] -> [2.75, 12.25]
           addLegendBoxTitle(legendBox, "Move Count-Width");
-          drawShadedSizedLine(legendBox, 130, 2.75, true);
+          drawShadedSizedLine(legendBox, 130, lineThickVal(2), true);
           addLegendValue(legendBox, "2", true);
-          drawShadedSizedLine(legendBox, 130, 12.25, false);
-          addLegendValue(legendBox, "78", false);
+          drawShadedSizedLine(legendBox, 130, lineThickVal(73), false);
+          addLegendValue(legendBox, "73", false);
 
           currentRectLeftX -= singleLegendWidth + 10;
       }
@@ -429,7 +429,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         }
 
         function addLegendValue(drawBox, txtValue, isTopLine) {
-            var lineX = edgeOffset + 2*midMargin + halfWidth;
+            var lineX = edgeOffset + 2*midMargin + halfWidth + halfWidth/2;
             var lineY = topMargin + halfHeight/2 - lineThick/2;
             if (!isTopLine) { lineY += halfHeight; }
 
