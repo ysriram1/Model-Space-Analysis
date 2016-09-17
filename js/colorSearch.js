@@ -22,9 +22,9 @@ function textSearchColorReset(visSVGName) {
 
   // go through each point and line 
   svg.selectAll(".dot")
-     .style("fill", function(d) { return dClrsUsers[d.user]; })
+     .style("fill", function(d) { return dClrsUsers[dUserGroupAltColors[d.user]]; })
   svg.selectAll(".line")
-     .style("stroke", function(d) { return dClrsUsers[d.user]; })
+     .style("stroke", function(d) { return dClrsUsers[dUserGroupAltColors[d.user]]; })
 
 }
 
@@ -54,6 +54,6 @@ function colorChoice(d, searchStr, type) {
   }else {if(d.info.toLowerCase().search(searchStr.toLowerCase()) != -1) {
     return d3.rgb("#000");
   } else {
-    return dClrsUsers[d.user];
+    return dClrsUsers[dUserGroupAltColors[d.user]];
   }}
 }

@@ -170,7 +170,7 @@ for i in range(1,len(vectorMat)):
 start = 0; end = 0 
 TSNEresultDict = {}
 for logID in readOrder:
-3#['10','11','1','2','4','5','6','7','8','9']:
+#['10','11','1','2','4','5','6','7','8','9']:
     end = end + lstCounts[logID]
     TSNEresultDict[logID] = redVectorMat[start:end]
     start = end
