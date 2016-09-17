@@ -262,15 +262,19 @@
               <input style='margin-top:5px' type="button" name="btnDisplayOptions" value="Submit" onclick="refreshVis()"> -->
             
           </div>
-        <div id="ColorSearch" class="InfoBox">
+      <div id="ColorSearch" class="InfoBox">
         <b>Color by Search</b> <br>
-        Enter a Keyword or Document Name
+        Enter a feature name or data-point number.
 
-	    <input style='margin-bottom:6px; margin-top:6px;' type="text" name="txtColorSearch" id="txtColorSearch"> <br>
-            <input type="button" name="btnColorSearchDismiss" value="Dismiss"
-                   onclick="textSearchColorReset('#VIS')" >
-            <input type="button" name="btnColorSearch" value="Search"
-                   onclick="textSearchColor('txtColorSearch', '#VIS');" >
+      <input type="text" name="txtColorSearch" id="txtColorSearch"> <br>
+            <input type="radio" name="lineVSdot" value="feature" id="LorDFeature" checked> Feature <!--Sriram: Added radio button so that user can chose whether to go with feature search or datapoint search-->
+            <input type="radio" name="lineVSdot" value="dataPoint" id="LorDPoint"> Data Point <br>
+
+            <input type="button" name="btnColorSearchDismiss" value="dismiss"
+                   onclick="textSearchColorReset('#VIS')">
+            
+            <input type="button" name="btnColorSearch" value="search"
+                   onclick="textSearchColor('txtColorSearch', '#VIS', 'lineVSdot');" >
         </div>
         <div id="SharedTokensBox" class="InfoBox">
         <b>Shared Keywords</b> <br>
