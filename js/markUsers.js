@@ -5,9 +5,9 @@
   markUsers = function(T) {
     var bTurnOn, dUserGroups, uid, _i, _len, _ref, _results;
     dUserGroups = {
-                      undergrads: [1,5,6,8,9],
+                      undergrads: [1,5,6,9],
                           masters: [10],  
-                         phds: [2,4,7,11]
+                         phds: [2,4,7,8,11]
     };
     bTurnOn = d3.select('#chkGrp' + T).property('checked');
     _ref = dUserGroups[T.toLowerCase()];

@@ -71,17 +71,23 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
         dotXs = dotdata.map(getX),
         dotYs = dotdata.map(getY);
     
-    dUserGroup = {1:1,5:1,6:1,8:1,9:1,10:4,2:9,4:9,7:9,11:9};
-    dUserGroupAltColors = {1:1, 5:2, 6:3, 8:4, 9:5, 10:6, 2:7, 4:8, 7:9, 11:10};
+    dUserGroup = {1:1,5:1,6:1,8:9,9:1,10:4,2:9,4:9,7:9,11:9}; //user 8 is PhD
+    dUserGroupAltColors = {1:1, 5:2, 6:3, 8:11, 9:5, 10:6, 2:7, 4:8, 7:9, 11:10};
 
     if(!OPTS.groupChecked){
     var fClrsUsers = d3.scale.category20();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
 
+    d3.selectAll(".opt").selectAll(".userLegendBox").remove();
+
     for (var key in dUserGroup){
       var userNumber = ".u"+key;
       //var childText = "<div style='background:'"
       var selectNode = d3.selectAll(".opt").filter(userNumber)
+                .append("div")
+                .attr("class","userLegendBox")
+                .style("width","30")
+                .style("height","15px")
                 .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroupAltColors[key]]);
 
@@ -92,10 +98,17 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     
     var fClrsUsers = d3.scale.category20b();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
+
+    d3.selectAll(".opt").selectAll(".userLegendBox").remove();
+
      for (var key in dUserGroup){
       var userNumber = ".u"+key;
       //var childText = "<div style='background:'"
       var selectNode = d3.selectAll(".opt").filter(userNumber)
+                .append("div")
+                .attr("class","userLegendBox")
+                .style("width","30")
+                .style("height","15px")
                 .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroup[key]]);
 
