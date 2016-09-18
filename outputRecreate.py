@@ -32,7 +32,7 @@ def fillLines(userData):
         pointsMovedCount = 0
         pointsMovedCountText = ''
         j = i + 1 #the pointsList starts with key 1 not 0
-        pointsText = '<br><b>Points Moved</b> <br> '        
+        pointsText = '<b>Points Moved</b> <br> '        
         print j - pushj
         if userData['undoIndicator'][i] == 1: pointAddText = 'None(user used UNDO)'; pushj += 1; print pushj
         else: 
@@ -62,7 +62,7 @@ def fillLines(userData):
             pointsMovedCountText ='(Total ' + str(pointsMovedCount) + ' points moved)<br>'#Counting the total number of points moved            
             pointAddText = set1 + set2
         totalPointsText = pointsText + pointsMovedCountText + pointAddText
-        text = "<b>Accuracy Change:</b> "
+        #text = "<b>Accuracy Change:</b> "
         if i == 0: 
             x1 = userData['initLayoutPoint'][0]
             y1 = userData['initLayoutPoint'][1]
@@ -75,11 +75,11 @@ def fillLines(userData):
         direction = "increase" if round(accChange,2) >0  else "decrease"
         if round(accChange,2) == 0: direction = "unchanged"
         if round(accChange,2) == 0: accChange = 0
-        if accChange>0: text = text + "+%.2f (%s)"%(accChange,direction)        
-        else: text = text + "%.2f (%s)"%(accChange,direction)
+        #if accChange>0: text = text + "+%.2f (%s)"%(accChange,direction)        
+        #else: text = text + "%.2f (%s)"%(accChange,direction)
         undoInd = False
         if userData['undoIndicator'][i] == 1: undoInd = True
-        linesLst.append({'backward': undoInd, 'info':text + totalPointsText, 
+        linesLst.append({'backward': undoInd, 'info':totalPointsText, 
         'x1':x1,'x2':x2,'y1':y1,'y2':y2, 'count':pointsMovedCount})
     return linesLst
     

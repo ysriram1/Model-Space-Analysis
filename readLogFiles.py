@@ -208,6 +208,8 @@ np.random.seed(99)
 vecsForMDSNoise = np.array([[np.random.normal(np.mean(x),np.std(x)) for x in vecsForMDS.T] for y in range(100)])
 vecsForMDSTotal = np.concatenate((vecsForMDS, vecsForMDSNoise), axis =0)
 
+vecsForMDSTotal = vecsForMDS
+
 # get the projected vectors for the unique subset of vectors
 subsetRedVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vecsForMDSTotal)
 #redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
@@ -287,7 +289,7 @@ plt.xlabel('MDS Proj 1'); plt.ylabel('MDS Proj 2')
 plt.title('MDS Solution Vectors for Diffirent Users of Disfunction')
 plt.legend(prop={'size':20}, bbox_to_anchor=(1,1))
 plt.tight_layout(pad=7)
-plt.savefig('./MDSOutput_diff_withnoise_2.png')
+plt.savefig('./MDSOutput_diff_withoutNoise_2.png')
 
     
 
@@ -322,7 +324,7 @@ for logID in MDSresultDict.keys():
     userModelDict[name]['observations']['insights'] = subInsights
     
 
-pFile = open('./userDisfunctionSpace.pickle', 'w')
+pFile = open('./userDisfunctionSpace_noNoise.pickle', 'w')
 pickle.dump(userModelDict, pFile)
 pFile.close()
 sampleFile2 = pickle.load(open('userDisfunctionSpace.pickle'))
