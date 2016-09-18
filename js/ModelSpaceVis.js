@@ -88,6 +88,9 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                 .attr("class","userLegendBox")
                 .style("width","30")
                 .style("height","15px")
+                .style("position","relative")
+                .style("right", "-100")
+                .style("top","-17")
                 .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroupAltColors[key]]);
 
