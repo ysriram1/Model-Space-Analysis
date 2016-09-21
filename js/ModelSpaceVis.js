@@ -391,8 +391,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
           function dotIntensity(x) { return 255-Math.round(255*(x-0.88)*8.5); }
           // ? range is [0.85, 1.0] ?
           addLegendBoxTitle(legendBox, "Accuracy-Shade");
-          drawShadedSizedDot(legendBox, dotIntensity(0.90), 6, true);
-          addLegendValue(legendBox, "0.90", true);
+          drawShadedSizedDot(legendBox, dotIntensity(0.89), 6, true);
+          addLegendValue(legendBox, "0.89", true);
           drawShadedSizedDot(legendBox, dotIntensity(0.975), 6, false);
           addLegendValue(legendBox, "0.98", false);
 
@@ -406,8 +406,8 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
           function dotSize(x) { return 31.5*Math.sqrt(x-0.88); }
           // ? range is [0.85, 1.0] ?
           addLegendBoxTitle(legendBox, "Accuracy-Size");
-          drawShadedSizedDot(legendBox, 130, dotSize(0.90), true);
-          addLegendValue(legendBox, "0.90", true);
+          drawShadedSizedDot(legendBox, 130, dotSize(0.89), true);
+          addLegendValue(legendBox, "0.89", true);
           drawShadedSizedDot(legendBox, 130, dotSize(0.975), false);
           addLegendValue(legendBox, "0.98", false);
 
