@@ -58,10 +58,13 @@
   width: 200px;
 }
 
-.RightOpts /*Sriram: added this to edit right info options*/
+.RightOpts
 {
   border-top: 1px solid;
   border-bottom: 1px solid;
+  margin-left: 10px;
+  /* height: 385px; */
+  height: 370px;
 }
 
 .InfoBoxContainer
@@ -73,12 +76,6 @@
 .TopInfoBox
 { 
   margin-top: 0px;
-}
-
-.RightOpts
-{
-  margin-left: 10px;
-  height: 385px;
 }
 
 .LeftOpts
