@@ -4,22 +4,6 @@ Created on Fri Jul 29 19:51:05 2016
 
 @author: Sriram
 """
-# input is of the format:
-# { uid: {'layouts' -> [ (x,y) ],
-#         'terms' -> [ term ],
-#         'logs' -> [ (log tuple) ], *(dt, marker, [info])
-#         'observations' -> { 'comments': [ comments at end ],
-#                             'gender': 'f' or 'm',
-#                             'job': str,
-#                             'insight_names': [str]
-#                             'starttime': dt
-#                             'insights': [ { 'insights': { isightname: num },
-#                                             'notes': str,
-#                                             'time': dt } ]
-#                           }
-#        }
-# }
-
 
 import pickle
 import os
@@ -34,10 +18,8 @@ from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import cross_val_score
 
-#os.chdir('/Users/Sriram/Desktop/DePaul/model-space-analysis')
 os.chdir('C:/Users/SYARLAG1/Desktop/Model-Space-Analysis')
 
-#sampleFile = pickle.load(open('no15812_newproj.pickle'))
 
 ##############################################################################################################
 #####Functions to parse the user interaction log files, get the final vectors and perform MDS (or tsne) to get 2D proj
@@ -115,7 +97,7 @@ X = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='float
 y = np.genfromtxt('./wineplus_cl.csv',delimiter=',', skip_header=1, dtype='object',\
                     usecols = 0)
 
-####################Running the function and generating the MDS proj, Nearest Neighbours etc#######
+#Running the function and generating the projs, Nearest Neighbours etc
 
 os.chdir('./user_sequence_data')
 logFileLst = os.listdir('./')
@@ -145,18 +127,9 @@ for logID in readOrder:#['10','11','1','2','4','5','6']:#,'7','8','9']:
     lstDict[logID] = vectorMat[start:end]
     start = end
     
-################################Data Manipulation for TSNE
-###We perform TSNE by taking the arrays projecting them as long as they arent different and then checking the vals
-'''
-duplicateIndices = {}
-for i in range(len(vectorMat)):
-    for j in range(i+1, len(vectorMat)):
-        if np.sum(vectorMat[i] == vectorMat[j]) == len(vectorMat[j]):
-            if i in duplicateIndices.keys(): duplicateIndices[i].append(j)
-            else:  duplicateIndices[i] = []; duplicateIndices[i].append(j)
+################################Data Manipulation for TSNE ################################################################
+###We perform TSNE by taking the arrays projecting them as long as they arent different and then checking the vals########
 
-uniqueVecMat = np.array(list(set([tuple(row) for row in vectorMat]))) #This only contains the unique elements
-'''
 redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
 
 changes = 0
@@ -181,7 +154,6 @@ for logID in readOrder:
 
 knnDict = {}
 for logID in lstDict.keys():
-    #print logID, np.sum((lstDict[logID]<0),1), lstDict[logID].shape
     knnDict[logID] = knnAccGen(lstDict[logID], X, y)
 
 topFeatureDict = {}
@@ -191,8 +163,8 @@ for logID in lstDict.keys():
     
     
     
-#######################################################
-##Performing MDS on the entire data:
+##############################################################################################################
+#####################Performing MDS on the entire data #######################################################
 vectorMat = np.array(fullLst, dtype='float64')
 
 # deal with repeated vectors by creating a dictionary from vector to original row id
@@ -212,8 +184,6 @@ vecsForMDSTotal = vecsForMDS
 
 # get the projected vectors for the unique subset of vectors
 subsetRedVectorMat = MDS(n_components=2, random_state=99,dissimilarity='euclidean').fit_transform(vecsForMDSTotal)
-#redVectorMat = PCA(n_components=2).fit_transform(vectorMat)
-#redVectorMat = TSNE(n_components=2, random_state=99).fit_transform(vectorMat)
 
 # put the projected vectors back in place for visualization
 redVectorMat = np.zeros([len(vectorMat), 2])
@@ -240,7 +210,7 @@ for logID in readOrder:#,'7','8','9']:
 os.chdir('./..')
 
 ######################################################################################################
-####Randomly generating the logs list in the dictionary
+####Randomly generating the logs list in the dictionary #############################################
 dateTime = []; marker = ['DOC_MOUSEOVER']*len(range(0,501,5)); info = [12,34]*len(range(0,501,5))
 a = datetime.datetime(2016,1,1,0,0,0)
 
@@ -264,14 +234,12 @@ for i in range(20):
 subInsights = {'insights':{random.choice(insightNames):1, 'notes':'xyz', 'time':random.choice(insightsTime)} for x in range(20)}
 
 #######################################################################################################
-#############Plotting:
+#############Plotting ###########################################################################
+
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import cm 
 plt.style.use('ggplot')
 
-#colorPerUser = { 1:1,5:1,6:1,8:1,9:1,10:2,2:3,4:3,7:3,11:3} 
-#colorGroupToColor = { 1: 'b', 2: 'g', 3: 'r'}
-#colorGroupToColor[colorPerUser[int(logID)]] #use for groups
 colors=cm.rainbow(np.linspace(0,1,10))
 
 fig = plt.figure(figsize=(17,17))
@@ -294,7 +262,7 @@ plt.savefig('./MDSOutput_diff_withoutNoise_2.png')
     
 
 #########################################################################################################
-######Putting it all together for ModelSpace.py:
+######Putting it all together for ModelSpace.py###########################################################
 userModelDict = {}
 
 for logID in MDSresultDict.keys():

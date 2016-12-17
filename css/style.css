@@ -12,12 +12,8 @@
 {
   margin-left: auto;
   margin-right: auto;
-  /*width: 1050px;*/
   width: 1250px;
-  background: transparent;  /*ddd #528B8B; */
-  /*border: 2px; 
-  border-style: solid;
-  border-color: 66d; /* 0a0; */
+  background: transparent;  
   padding: 0px 0px 0px 0px;
   clear: both;
 }
@@ -63,7 +59,6 @@
   border-top: 1px solid;
   border-bottom: 1px solid;
   margin-left: 10px;
-  /* height: 385px; */
   height: 370px;
 }
 
@@ -93,24 +88,22 @@
 
 .BottomOpts
 {
-  /* margin-left: 210px; */
   margin-top: 20px;
-  /*width: 800px*/
 }
 
-#VisHolder /*Sriram: Added this to have border for main vis holder;*/
+#VisHolder 
 {
   padding: 2px;
   border: 2px solid #000000;
   background: #f2f2f2;
 }
 
-.opt /*Sriram: Adds additional padding to the individual options */
+.opt 
 {
   padding-left:5px; 
 }
 
-#LeftOptPanel/*Sriram: Adds additional padding to the left panel*/
+#LeftOptPanel
 {
   padding-bottom: 2px;
 }

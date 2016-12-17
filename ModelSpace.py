@@ -31,44 +31,7 @@ PP = pprint.PrettyPrinter(indent=2)
 def aggregateData(fulldata):
     if len(fulldata) == 0:
         raise ValueError("Called aggregate data without data!")
-    #######!!!!!!!!!!!! uncomment below for actual run
-    '''
-    # get documents set
-    docs = [ "doc" + str(i) for i in range(50) ]
-    docs.extend(fulldata[fulldata.keys()[0]]['terms'])
-    
-    #!!!!!!!!!!Delete this for real run:
-    #tempDict = {'backward': False, 
-     #           'info': "From 15:53:00 for 0:10:15<br />Read: attacks targeting oil facilities, saudi national, web site, biological agent testing facility, apiece, guns, break, states, grenades, elected officials, american bank, charged, conspiring, missing, beach, plotted, islamic jihad union, attended training camps, germany, arrested, afghanistan, connections, organization, bombings, connection, aryan brotherhood, denver, investigation, blowing, attack, alberto gonzales describes, arrested yesterday morning, evidence, florida, buildings, atlanta bank accounts<br />Searches: ['BROOKLYN', 'DEFREITAS', 'BROOKLYN', 'ATLANTIC AVENUE', 'BALFOUR']<br />GOs: [{'terms1': []}]<br />obs: ['bomb', 'people', 'money', 'arrested', 'other countries', 'weapons', 'Brooklyn', 'spatial', 'CO', 'bank']",
-      #          'x1': 0.020768,
-       #         'x2': 0.030871,
-        #        'y1': 0.34112299999999995,
-         #       'y2': 0.361156}
 
-    # get the info about the useful distance function in the data
-    dUsrResult = {}
-    for uid in fulldata:
-        print "processing user: " + str(uid)
-        DFInfo = distanceFunctions(fulldata[uid], docs)
-        DFInfo = addInitDot(DFInfo, fulldata[uid]['initLayoutPoint'])
-        
-        ##!!!!!!!!!!!!Uncomment these for actual run:
-        LineInfo = lines(fulldata[uid], DFInfo, docs)
-        LineInfo = lastLineToDot(DFInfo, LineInfo)
-        
-        ##!!!!!!!!!This needs to be deleted for actual run        
-        #LineInfo = [tempDict]*((len(DFInfo))-1)
-
-
-        dUsrResult[uid] = { 'DFs': DFInfo, 'lines': LineInfo }
-
-    # flip the result from user->{df->_, lines->} to df->users, lines->users
-    #dResult = {'DFs': {}, 'lines': {}}
-    #for uid in dUsrResult:
-    #    dResult['DFs'][uid] = dUsrResult[uid]['DFs']
-    #    dResult['lines'][uid] = dUsrResult[uid]['lines']
-    '''
-    #########!!!!Delete the code below for actual run
     import outputRecreate as outr
     dUsrResult = {}
     for key in fulldata.keys():

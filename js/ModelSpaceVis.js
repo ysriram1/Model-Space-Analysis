@@ -1,10 +1,10 @@
-// note uses userChecked from markUsers.js (coffee)
+// note uses userChecked from markUsers.js 
 
 function refreshVis() {
   if (userdata != []) {
 
     OPTS = getOptions();
-    clearTokenBox();//Sriram:Added this to clear infoBox First 
+    clearTokenBox();//to clear infoBox First 
     //Opts for Line
     var shadeOptsL = document.getElementById("shadeOpts_L");
     var shadeStateL = shadeOptsL.options[shadeOptsL.selectedIndex].value;
@@ -23,8 +23,7 @@ function refreshVis() {
     var dotChecked = document.getElementById('showDots').checked;
     var groupChecked = document.getElementById('colorByGroup').checked;
 
-    //Sriram: added this to show and remove legend
-    //var legendChecked = document.getElementById('legendOpt').value;
+    //show and remove legend
     var legendChecked = document.getElementById('legendShowYes').checked;
 
     OPTS.lineChecked = lineChecked;
@@ -43,10 +42,7 @@ function refreshVis() {
     OPTS.dotRadNoneChecked_t_d = widthStateD == "none_t_d";
     OPTS.dotRadAccChecked_t_d = widthStateD == "accuracy_t_d";
 
-
     OPTS.showLegendYes = legendChecked;
-    //OPTS.showLegendYes = legendChecked == 'yes';
-    //OPTS.showLegendNo = legendChecked == 'no';
 
     drawVis(userdata, "#VIS", 800, 800, OPTS);
   }
@@ -56,10 +52,7 @@ VisData = {}; // allow access to the data for thevis
 var dClrsUsers = {};
 
 function drawVis(userdata, anchorname, W, H, OPTS) {
-    //var bDrawLines = OPTS['DrawLines'];
-    //var bDrawEndPoints = OPTS['DrawEndPoints'];
-    //var bDrawDiamonds = OPTS['DrawDiamonds'];
-    //var bDrawArrows = OPTS['DrawArrows'];
+
 
     var dotdata = userDots(userdata);
     var linedata = userLines(userdata);
@@ -91,16 +84,13 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                 .style("height","14px")
                 .style("float", "right")
                 .style("padding-top", "2px")
-                //.style("position","relative")
-                //.style("right", "-100")
-                //.style("top","-17")
                 .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroupAltColors[key]]);
 
     }
     }
 
-    if(OPTS.groupChecked){//Sriram: if group is checked color selection process:
+    if(OPTS.groupChecked){//if group is checked color selection process:
     
     var fClrsUsers = d3.scale.category20b();
     dClrsUsers = mapColors(dotdata, fClrsUsers);
@@ -109,7 +99,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 
      for (var key in dUserGroup){
       var userNumber = ".u"+key;
-      //var childText = "<div style='background:'"
       var selectNode = d3.selectAll(".opt").filter(userNumber)
   .insert("div", ":first-child").style("width", 140).style("clear", "both")
                 .attr("class","userLegendBox")
@@ -118,9 +107,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                 .style("height","14px")
                 .style("float", "right")
                 .style("padding-top", "2px")
-                //.style("position","relative")
-                //.style("right", "-100")
-                //.style("top","-17")
                 .style("border-radius","2px")
                 .style("background",dClrsUsers[dUserGroup[key]]);
 
@@ -152,11 +138,11 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                                       .style("width", "220px")
                                       .style("background-color", "#ee0")
                                       .style("pointer-events", "none")
-                                      .style("padding","8px") //Sriram: Added this to include some padding on the boxes
-                                      .style("border-radius","10px");//Sriram: Added this to have rounded corners on the info boxes
+                                      .style("padding","8px") //padding on the boxes
+                                      .style("border-radius","10px");//rounded corners on the info boxes
 
     var svg = d3.select(anchorname)
-      //.append("g") // svg group and .call are for zooming
+     // svg group and .call are for zooming
       .call(d3.behavior.zoom()
 	    .x(fScaleX)
             .y(fScaleY)
@@ -164,7 +150,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
             .on("zoom", fZoom));
 
     svg.append("rect") // background rect means zoom affects whole area
-      .attr("width", W) //W:800px, H:800px
+      .attr("width", W) // W:800px, H:800px
       .attr("height", H)
       .attr("fill", "transparent")
 
@@ -185,14 +171,12 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
     var fTwoSegments = function(ld) { // turn one linedatum into 2 fTwoSegmentsnts
        return [ { x:ld.x1, y:ld.y1 },
                 halfwayBump(ld, ld['backward']),
-                //{ x:ld.x1 + (ld.x2-ld.x1)/2, y:ld.y1 + (ld.y2-ld.y1)/2 },
                 { x:ld.x2, y:ld.y2 } ];
     };
     var lines = svg.selectAll(".line")
        .data(linedata)
        .enter().append("path")
        .attr("class", function(d){return "line user" + d.user;})
-      //.attr("d", function(d){return lineFunction(fTwoSegments(d));})
        .attr("stroke", function(d) {
 	   if (d.customColor) { return d.customColor; }
            else {
@@ -206,7 +190,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 	       }
                if (OPTS.groupChecked) { return dClrsUsers[dUserGroup[d.user]]; }
            } })
-        //Sriram:Added this to accomadate varying line width based on read count
+        // varying line width based on read count
 	.attr("stroke-width", function(d){
             if(OPTS.lineColNoneChecked_t_l){return lineThick;}
             if(OPTS.lineColMoveChecked_t_l){return 2.5+d.count/8;}
@@ -230,7 +214,7 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .style("opacity", 0);
            })
 
-    //Sriram: added this to remove lines with lineChecked is not checked.0
+    // remove lines with lineChecked is not checked.0
     if(!OPTS.lineChecked){svg.selectAll(".line").remove();}
 
 
@@ -241,11 +225,10 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
        .attr("class", function(d){ str = d.info;
                                    DFNo = str.slice(17,19);
                                    return "dot user" + d.user +" DF"+ DFNo;
-                                   // return "dot user" + d.user;
                                  })
        .attr("r", function(d){
            if (OPTS.dotRadNoneChecked_t_d) { return dotDiam; }
-           //Sriram: dynamic radius (lowest acc value was around 0.88)}
+           // dynamic radius (lowest acc value was around 0.88)}
            if (OPTS.dotRadAccChecked_t_d) { return 31.5*Math.sqrt(d.acc-0.88);}
        })
       // .attr("cx", fGetScaledX)
@@ -265,16 +248,12 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
 		       if(OPTS.groupChecked){ return dClrsUsers[dUserGroup[d.user]]; }
                    } })  
        .on("click", function(d) { updateInfoBox(d.info);
-                                  newDfInfo = d.info.slice(24,9999999) //Sriram: Adding this to ignore "Top key words"
+                                  newDfInfo = d.info.slice(24,9999999) // to ignore "Top key words"
                                   updateSharedTokens(newDfInfo, 'dot'); 
                                   str = d.info; console.log(str);
                                   tempDFNo = str.slice(17,19);
                                   tempName = ".dot.user" + d.user+".df"+tempDFNo; console.log(tempName); //creating temp identifier
                                   svg.selectAll(tempName)
-                                      //.attr('r',12)
-                                      //.style("fill", "transparent")       
-                                      //.style("stroke", "red");  
-                                      //.attr('r',100)
                                       .style('fill',d3.rgb('blue')); //Sriram:changes the color to blue upon click
                                     })
        .on("mouseover", function(d) {
@@ -463,7 +442,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .attr("y", lineY)
                    .attr("text-anchor", "middle")
                    .attr("dominant-baseline", "central")
-                   //.attr("dy", ".5em")
                    .attr("font-family", "sans-serif")
                    .attr("font-size", "13px")
                    .attr("fill", "black")
@@ -478,7 +456,6 @@ function drawVis(userdata, anchorname, W, H, OPTS) {
                    .attr("y", lineY)
                    .attr("text-anchor", "middle")
                    .attr("dominant-baseline", "central")
-                   //.attr("dy", ".5em")
                    .attr("font-family", "sans-serif")
                    .style('font-weight', 'bold')
                    .attr("font-size", "13px")
