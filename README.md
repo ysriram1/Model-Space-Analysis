@@ -3,6 +3,7 @@ ModelSpace
 
 To launch ModelSpace prototype demo:
 - clone repo
+- launch terminal
 - cd into the repo
 - type "python Server.py userDisfunctionSpace.pickle"
-- use any browser and http://127.0.0.1:11319/ModelSpace
+- use any browser and go to http://127.0.0.1:11319/ModelSpace
