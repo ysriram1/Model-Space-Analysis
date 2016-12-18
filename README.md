@@ -1,5 +1,6 @@
 ModelSpace
 ==========
+(Needs Python 2.7)
 
 To launch ModelSpace prototype demo:
 - clone repo
