@@ -12,7 +12,7 @@
 {
   margin-left: auto;
   margin-right: auto;
-  width: 1250px;
+  width: 1450px;
   background: transparent;  
   padding: 0px 0px 0px 0px;
   clear: both;
@@ -33,7 +33,17 @@
   float: left;
   border: 0px;
   border-top: 0px;
-  border-top-style: solid;
+  /* border-top-style: solid; */
+
+  float: left;
+  /* border: 1px 1px 1px 1px;
+  border-style: solid;
+  border-top-style: solid; */
+  margin-top: 20px;
+  padding-top: 4px;
+  overflow: auto;
+  width: 100%;
+  background-color: #f0f5f5;
 }
 
 .SingleOption
@@ -45,38 +55,25 @@
 .InfoBox
 {
   float: left;
-  border: 0px;
-  border-top: 1px;
-  border-top-style: solid;
+  border: 2px solid #888;
+  border-style: solid;
+  /* border-top-style: solid; */
   margin-top: 20px;
-  padding-top: 4px;
+  /* padding-top: 4px; */
+  padding: 3px 3px 3px 3px;
   overflow: auto;
-  width: 200px;
+  width: 100%;
+  background-color: #f0f5f5;
 }
 
-.RightOpts
+.DataHistoryBox
 {
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  margin-left: 10px;
   height: 370px;
-}
-
-.InfoBoxContainer
-{
-  padding-top: 0px;
-  border-top: 0px;
 }
 
 .TopInfoBox
 { 
   margin-top: 0px;
-}
-
-.LeftOpts
-{
-  margin-right: 10px;
-  height: 900px;
 }
 
 .SmallLeftOpt
@@ -93,8 +90,9 @@
 
 #VisHolder 
 {
+  float: left;
   padding: 2px;
-  border: 2px solid #000000;
+  border: 2px solid #888;
   background: #f2f2f2;
 }
 
@@ -105,9 +103,24 @@
 
 #LeftOptPanel
 {
+  float: left;
   padding-bottom: 2px;
+  width: 300px;
+  height: 800px;
+  margin-right: 20px;
+  clear: both;
 }
 
+#RightOptPanel
+{
+  /* border-top: 1px solid;
+  border-bottom: 1px solid; */
+  float: left;
+  margin-left: 10px;
+  padding-bottom: 2px;
+  width: 300px;
+  height: 800px;
+}
 
 
 
