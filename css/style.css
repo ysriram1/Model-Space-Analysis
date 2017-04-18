@@ -123,4 +123,13 @@
 }
 
 
+#UserOptionsHolder
+{
+  padding: 2px;
+  height: 200px;
+}
 
+.opt{
+  float:left;
+  padding-left: 2px;
+}
